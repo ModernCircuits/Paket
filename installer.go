@@ -1,4 +1,4 @@
-package main
+package paket
 
 import (
 	"encoding/xml"
@@ -10,37 +10,35 @@ import (
 	"github.com/moderncircuits/paket/productbuild"
 )
 
-type Component struct {
-	Tag         string `json:"tag,omitempty"`
-	PayloadPath string `json:"payloadPath,omitempty"`
-	InstallPath string `json:"installPath,omitempty"`
+type Project struct {
+	Name        string            `hcl:"name"`
+	Version     string            `hcl:"version"`
+	Identifier  string            `hcl:"identifier"`
+	WindowsUUID string            `hcl:"windows_uuid,optional"`
+	Installer   []InstallerConfig `hcl:"installer,block"`
 }
 
-type MacOS struct {
-	Components []Component `json:"components,omitempty"`
+type InstallerConfig struct {
+	OS         string            `hcl:"os,label"`
+	Components []ComponentConfig `hcl:"component,block"`
 }
 
-type Windows struct {
-	Components []Component `json:"components,omitempty"`
+type ComponentConfig struct {
+	Tag         string `hcl:"tag,label"`
+	Name        string `hcl:"name,optional"`
+	Version     string `hcl:"version"`
+	PayloadPath string `hcl:"payload_path"`
+	InstallPath string `hcl:"install_path"`
 }
 
-type Installer struct {
-	ProductName    string  `json:"productName,omitempty"`
-	ProductVersion string  `json:"productVersion,omitempty"`
-	Identifier     string  `json:"identifier,omitempty"`
-	ResourcePath   string  `json:"resourcePath,omitempty"`
-	MacOS          MacOS   `json:"macOS,omitempty"`
-	Windows        Windows `json:"windows,omitempty"`
-}
-
-func (i Installer) Create() error {
+func (p Project) Create() error {
 
 	installerScript := productbuild.InstallerGuiScript{
 		AuthoringTool:        "Paket",
 		AuthoringToolVersion: "0.1.0",
 		AuthoringToolBuild:   "git",
 
-		Title:      i.ProductName,
+		Title:      p.Name,
 		License:    &productbuild.License{File: "LICENSE.txt"},
 		Welcome:    nil,
 		Conclusion: nil,
@@ -56,11 +54,19 @@ func (i Installer) Create() error {
 		Choices: []productbuild.Choice{},
 	}
 
-	for _, component := range i.MacOS.Components {
-		id := fmt.Sprintf("%s.%s", i.Identifier, strings.ToLower(component.Tag))
+	var macOS *InstallerConfig
+	for _, installer := range p.Installer {
+		if installer.OS == "macOS" {
+			macOS = &installer
+			break
+		}
+	}
+
+	for _, component := range macOS.Components {
+		id := fmt.Sprintf("%s.%s", p.Identifier, strings.ToLower(component.Tag))
 		pkgBuild := pkgbuild.Command{
 			Identifier:      id,
-			Version:         i.ProductVersion,
+			Version:         p.Version,
 			Component:       component.PayloadPath,
 			InstallLocation: component.InstallPath,
 			Output:          fmt.Sprintf("%s.pkg", component.Tag),
@@ -73,7 +79,7 @@ func (i Installer) Create() error {
 		line := productbuild.Line{Choice: id}
 		installerScript.ChoicesOutline.Lines = append(installerScript.ChoicesOutline.Lines, line)
 
-		ref := productbuild.PkgRef{ID: id, Version: i.ProductVersion}
+		ref := productbuild.PkgRef{ID: id, Version: p.Version}
 		choice := productbuild.Choice{
 			ID:      id,
 			Title:   component.Tag,

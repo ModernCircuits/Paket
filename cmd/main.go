@@ -7,28 +7,8 @@ import (
 	"os"
 
 	"github.com/hashicorp/hcl/v2/hclsimple"
+	"github.com/moderncircuits/paket"
 )
-
-type Config struct {
-	ProjectName    string            `hcl:"project_name"`
-	ProjectVersion string            `hcl:"project_version"`
-	BundleID       string            `hcl:"bundle_id"`
-	WindowsUUID    string            `hcl:"windows_uuid,optional"`
-	Installer      []InstallerConfig `hcl:"installer,block"`
-}
-
-type InstallerConfig struct {
-	OS         string            `hcl:"os,label"`
-	Components []ComponentConfig `hcl:"component,block"`
-}
-
-type ComponentConfig struct {
-	Tag         string `hcl:"tag,label"`
-	Name        string `hcl:"name,optional"`
-	Version     string `hcl:"version"`
-	Payload     string `hcl:"payload"`
-	InstallPath string `hcl:"install_path"`
-}
 
 func main() {
 	if err := run(); err != nil {
@@ -38,7 +18,7 @@ func main() {
 }
 
 func run() error {
-	var config Config
+	var config paket.Project
 	err := hclsimple.DecodeFile("test_data/config.hcl", nil, &config)
 	if err != nil {
 		return fmt.Errorf("failed to load configuration: %v", err)
@@ -56,3 +36,17 @@ func run() error {
 
 	return nil
 }
+
+// xmlFile, err := ioutil.ReadFile("productbuild/test_data/distribution.xml")
+// if err != nil {
+// 	fmt.Println(err)
+// }
+
+// {
+// 	html := textconv.MarkdownFileToHTML("test_data/simple_markdown.md")
+// 	fmt.Println(string(html))
+// }
+// {
+// 	html := textconv.MarkdownFileToHTML("LICENSE.txt")
+// 	fmt.Println(string(html))
+// }
