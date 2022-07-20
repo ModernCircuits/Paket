@@ -1,44 +1,50 @@
 package innosetup
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"reflect"
+	"strings"
+)
 
 // SetupSection represents the [setup] section of an iss file.
 // https://jrsoftware.org/ishelp/index.php?topic=setupsection
 type SetupSection struct {
-	AppId           string `json:"AppId,omitempty"`
-	AppName         string `json:"AppName,omitempty"`
-	AppPublisher    string `json:"AppPublisher,omitempty"`
-	AppPublisherURL string `json:"AppPublisherURL,omitempty"`
-	AppSupportURL   string `json:"AppSupportURL,omitempty"`
-	AppUpdatesURL   string `json:"AppUpdatesURL,omitempty"`
-	AppVersion      string `json:"AppVersion,omitempty"`
+	AppId           string `iss:"AppId,omitempty" json:"AppId,omitempty"`
+	AppName         string `iss:"AppName,omitempty" json:"AppName,omitempty"`
+	AppPublisher    string `iss:"AppPublisher,omitempty" json:"AppPublisher,omitempty"`
+	AppPublisherURL string `iss:"AppPublisherURL,omitempty" json:"AppPublisherURL,omitempty"`
+	AppSupportURL   string `iss:"AppSupportURL,omitempty" json:"AppSupportURL,omitempty"`
+	AppUpdatesURL   string `iss:"AppUpdatesURL,omitempty" json:"AppUpdatesURL,omitempty"`
+	AppVersion      string `iss:"AppVersion,omitempty" json:"AppVersion,omitempty"`
 
-	ArchitecturesAllowed            string `json:"ArchitecturesAllowed,omitempty"`
-	ArchitecturesInstallIn64BitMode string `json:"ArchitecturesInstallIn64BitMode,omitempty"`
+	ArchitecturesAllowed            string `iss:"ArchitecturesAllowed,omitempty" json:"ArchitecturesAllowed,omitempty"`
+	ArchitecturesInstallIn64BitMode string `iss:"ArchitecturesInstallIn64BitMode,omitempty" json:"ArchitecturesInstallIn64BitMode,omitempty"`
 
-	Compression      string `json:"Compression,omitempty"`
-	DefaultDirName   string `json:"DefaultDirName,omitempty"`
-	DefaultGroupName string `json:"DefaultGroupName,omitempty"`
+	Compression      string `iss:"Compression,omitempty" json:"Compression,omitempty"`
+	DefaultDirName   string `iss:"DefaultDirName,omitempty" json:"DefaultDirName,omitempty"`
+	DefaultGroupName string `iss:"DefaultGroupName,omitempty" json:"DefaultGroupName,omitempty"`
 
-	LicenseFile string `json:"LicenseFile,omitempty"`
+	LicenseFile string `iss:"LicenseFile,omitempty" json:"LicenseFile,omitempty"`
 
-	InfoAfterFile  string `json:"InfoAfterFile,omitempty"`
-	InfoBeforeFile string `json:"InfoBeforeFile,omitempty"`
+	InfoAfterFile  string `iss:"InfoAfterFile,omitempty" json:"InfoAfterFile,omitempty"`
+	InfoBeforeFile string `iss:"InfoBeforeFile,omitempty" json:"InfoBeforeFile,omitempty"`
 
-	OutputDir          string `json:"OutputDir,omitempty"`
-	OutputBaseFilename string `json:"OutputBaseFilename,omitempty"`
-	SolidCompression   bool   `json:"SolidCompression,omitempty"`
-	SetupLogging       bool   `json:"SetupLogging,omitempty"`
+	OutputDir          string `iss:"OutputDir,omitempty" json:"OutputDir,omitempty"`
+	OutputBaseFilename string `iss:"OutputBaseFilename,omitempty" json:"OutputBaseFilename,omitempty"`
+	SolidCompression   bool   `iss:"SolidCompression,omitempty" json:"SolidCompression,omitempty"`
+	SetupLogging       bool   `iss:"SetupLogging,omitempty" json:"SetupLogging,omitempty"`
 
-	UninstallDisplayIcon     string `json:"UninstallDisplayIcon,omitempty"`
-	UninstallFilesDir        string `json:"UninstallFilesDir,omitempty"`
-	UninstallRestartComputer bool   `json:"UninstallRestartComputer,omitempty"`
+	UninstallDisplayIcon     string `iss:"UninstallDisplayIcon,omitempty" json:"UninstallDisplayIcon,omitempty"`
+	UninstallFilesDir        string `iss:"UninstallFilesDir,omitempty" json:"UninstallFilesDir,omitempty"`
+	UninstallRestartComputer bool   `iss:"UninstallRestartComputer,omitempty" json:"UninstallRestartComputer,omitempty"`
 
-	SetupIconFile        string `json:"SetupIconFile,omitempty"`
-	WizardImageFile      string `json:"WizardImageFile,omitempty"`
-	WizardSmallImageFile string `json:"WizardSmallImageFile,omitempty"`
-	WizardResizable      bool   `json:"WizardResizable,omitempty"`
-	WizardStyle          string `json:"WizardStyle,omitempty"`
+	SetupIconFile        string `iss:"SetupIconFile,omitempty" json:"SetupIconFile,omitempty"`
+	WizardImageFile      string `iss:"WizardImageFile,omitempty" json:"WizardImageFile,omitempty"`
+	WizardSmallImageFile string `iss:"WizardSmallImageFile,omitempty" json:"WizardSmallImageFile,omitempty"`
+	WizardResizable      bool   `iss:"WizardResizable,omitempty" json:"WizardResizable,omitempty"`
+	WizardStyle          string `iss:"WizardStyle,omitempty" json:"WizardStyle,omitempty"`
 }
 
 type InnoSetupScript struct {
@@ -74,7 +80,46 @@ func NewInnoSetupScript(projectName string, vendor string) InnoSetupScript {
 
 func (iss InnoSetupScript) Run() error {
 	if iss.Setup.AppId == "" {
-		return fmt.Errorf("AppId is required")
+		id, err := NewInnoSetupGUID()
+		if err != nil {
+			return err
+		}
+		iss.Setup.AppId = id
 	}
+
+	js, err := json.MarshalIndent(iss, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile("iss.json", js, 0644)
+	if err != nil {
+		return err
+	}
+
+	issType := reflect.TypeOf(iss)
+	examiner(issType, 0)
+
 	return nil
+}
+
+func examiner(t reflect.Type, depth int) {
+	fmt.Println(strings.Repeat("  ", depth), "Type is", t.Name(), "and kind is", t.Kind())
+	switch t.Kind() {
+	case reflect.Array, reflect.Chan, reflect.Map, reflect.Ptr, reflect.Slice:
+		fmt.Println(strings.Repeat("  ", depth+1), "Contained type:")
+		examiner(t.Elem(), depth+1)
+	case reflect.Struct:
+		for i := 0; i < t.NumField(); i++ {
+			f := t.Field(i)
+			if f.Type.Kind() == reflect.Struct {
+				examiner(f.Type, depth+1)
+			}
+			if f.Tag.Get("iss") != "" {
+				indent := strings.Repeat("  ", depth+1)
+				idx := i + 1
+				fmt.Printf("%s %d: %s Type: %s\n", indent, idx, f.Name, f.Type.Name())
+			}
+		}
+	}
 }

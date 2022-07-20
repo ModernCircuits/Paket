@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"runtime"
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/moderncircuits/paket"
@@ -46,7 +47,7 @@ func run() error {
 		return err
 	}
 
-	err = project.Run()
+	err = project.Run(runtime.GOOS)
 	if err != nil {
 		return err
 	}

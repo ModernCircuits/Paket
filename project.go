@@ -27,16 +27,34 @@ func ReadFile(path string, ctx *hcl.EvalContext) (*Project, error) {
 	return &project, nil
 }
 
-func (p Project) Run() error {
-	if err := runMacOS(p); err != nil {
-		return err
+func (p Project) Run(platform string) error {
+	handlers := map[string]func(Project) error{
+		"aix":       runNotImplemented,
+		"android":   runNotImplemented,
+		"darwin":    runMacOS,
+		"dragonfly": runNotImplemented,
+		"freebsd":   runNotImplemented,
+		"illumos":   runNotImplemented,
+		"ios":       runNotImplemented,
+		"js":        runNotImplemented,
+		"linux":     runNotImplemented,
+		"netbsd":    runNotImplemented,
+		"openbsd":   runNotImplemented,
+		"plan9":     runNotImplemented,
+		"solaris":   runNotImplemented,
+		"windows":   runWindowsInnoSetup,
 	}
 
-	if err := runWindowsInnoSetup(p); err != nil {
-		return err
+	handler, ok := handlers[platform]
+	if !ok {
+		return runNotImplemented(p)
 	}
 
-	return nil
+	return handler(p)
+}
+
+func runNotImplemented(project Project) error {
+	return fmt.Errorf("not implemented for this platform")
 }
 
 func FileExists(name string) (bool, error) {
