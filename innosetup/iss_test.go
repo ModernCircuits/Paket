@@ -1,6 +1,7 @@
 package innosetup_test
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/moderncircuits/paket"
@@ -21,5 +22,15 @@ func TestNewInnoSetupScript(t *testing.T) {
 
 		assert.Empty(t, iss.Setup.AppVersion)
 		assert.Empty(t, iss.Setup.LicenseFile)
+
+		buf := new(bytes.Buffer)
+		err = iss.WriteFile(buf)
+		assert.NoError(t, err)
+
+		str := buf.String()
+		assert.Contains(t, str, `AppName="Plugin Template"`)
+		assert.Contains(t, str, `AppPublisher="Modern Circuits"`)
+		assert.Contains(t, str, `WizardStyle="modern"`)
+		assert.Contains(t, str, `WizardResizable=no`)
 	}
 }

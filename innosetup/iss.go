@@ -1,11 +1,9 @@
 package innosetup
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"reflect"
-	"strings"
 )
 
 // SetupSection represents the [setup] section of an iss file.
@@ -78,7 +76,7 @@ func NewInnoSetupScript(projectName string, vendor string) InnoSetupScript {
 	}
 }
 
-func (iss InnoSetupScript) Run() error {
+func (iss InnoSetupScript) Run(w io.Writer) error {
 	if iss.Setup.AppId == "" {
 		id, err := NewInnoSetupGUID()
 		if err != nil {
@@ -87,44 +85,30 @@ func (iss InnoSetupScript) Run() error {
 		iss.Setup.AppId = id
 	}
 
-	js, err := json.MarshalIndent(iss, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	err = ioutil.WriteFile("iss.json", js, 0644)
-	if err != nil {
-		return err
-	}
-
-	examiner(iss)
-
-	return nil
+	return iss.WriteFile(w)
 }
 
-func examiner(iss InnoSetupScript) {
-	v := reflect.ValueOf(iss)
-	t := v.Type()
-	examinerImpl(t, 0)
-}
-
-func examinerImpl(t reflect.Type, depth int) {
-	fmt.Println(strings.Repeat("  ", depth), "Type is", t.Name(), "and kind is", t.Kind())
-	switch t.Kind() {
-	case reflect.Array, reflect.Chan, reflect.Map, reflect.Ptr, reflect.Slice:
-		fmt.Println(strings.Repeat("  ", depth+1), "Contained type:")
-		examinerImpl(t.Elem(), depth+1)
-	case reflect.Struct:
-		for i := 0; i < t.NumField(); i++ {
-			f := t.Field(i)
-			if f.Type.Kind() == reflect.Struct {
-				examinerImpl(f.Type, depth+1)
+func (iss InnoSetupScript) WriteFile(w io.Writer) error {
+	e := reflect.ValueOf(&iss.Setup).Elem()
+	for i := 0; i < e.NumField(); i++ {
+		varName := e.Type().Field(i).Name
+		varValue := e.Field(i).Interface()
+		varType := e.Type().Field(i).Type
+		switch varType.Kind() {
+		case reflect.String:
+			if str := varValue.(string); str != "" {
+				fmt.Fprintf(w, "%v=%q\n", varName, str)
 			}
-			if f.Tag.Get("iss") != "" {
-				indent := strings.Repeat("  ", depth+1)
-				idx := i + 1
-				fmt.Printf("%s %d: %s Type: %s\n", indent, idx, f.Name, f.Type.Name())
+		case reflect.Bool:
+			txt := "no"
+			if varValue.(bool) {
+				txt = "yes"
 			}
+			fmt.Fprintf(w, "%v=%v\n", varName, txt)
+		default:
+			return fmt.Errorf("unimplemented type %v", varType)
 		}
 	}
+
+	return nil
 }

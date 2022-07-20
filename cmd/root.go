@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"runtime"
 
@@ -18,7 +17,6 @@ var rootCmd = &cobra.Command{
 }
 
 func runRootCommand(cmd *cobra.Command, args []string) error {
-	fmt.Println("Root Command")
 	project, err := paket.NewProject("testdata/full.hcl")
 	if err != nil {
 		return err
