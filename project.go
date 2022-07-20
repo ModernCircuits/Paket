@@ -11,6 +11,7 @@ import (
 
 type Project struct {
 	Name       string            `hcl:"name" json:"name"`
+	Vendor     string            `hcl:"vendor" json:"vendor"`
 	Identifier string            `hcl:"identifier" json:"identifier"`
 	Version    string            `hcl:"version" json:"version"`
 	License    string            `hcl:"license,optional" json:"license,omitempty"`
@@ -28,6 +29,10 @@ func ReadFile(path string, ctx *hcl.EvalContext) (*Project, error) {
 
 func (p Project) Run() error {
 	if err := runMacOS(p); err != nil {
+		return err
+	}
+
+	if err := runWindowsInnoSetup(p); err != nil {
 		return err
 	}
 

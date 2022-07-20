@@ -31,7 +31,7 @@ func run() error {
 		},
 	}
 
-	project, err := paket.ReadFile("testdata/config.hcl", ctx)
+	project, err := paket.ReadFile("testdata/minimal.hcl", ctx)
 	if err != nil {
 		return err
 	}

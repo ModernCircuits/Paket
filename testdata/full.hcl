@@ -1,4 +1,5 @@
 name = "Plugin Template"
+vendor = "Modern Circuits"
 version = "0.1.0"
 license = "LICENSE.txt"
 identifier = "com.modern-circuits.plugin-template"
