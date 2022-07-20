@@ -17,7 +17,7 @@ func CreateDistributionXML(project paket.Project) error {
 		AuthoringToolBuild:   "git",
 
 		Title:      project.Name,
-		License:    &License{File: "LICENSE.txt"},
+		License:    &License{File: project.License},
 		Welcome:    nil,
 		Conclusion: nil,
 
