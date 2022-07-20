@@ -20,7 +20,7 @@ func main() {
 
 func run() error {
 	var project paket.Project
-	err := hclsimple.DecodeFile("test_data/config.hcl", nil, &project)
+	err := hclsimple.DecodeFile("testdata/config.hcl", nil, &project)
 	if err != nil {
 		return fmt.Errorf("failed to load configuration: %v", err)
 	}
@@ -43,13 +43,13 @@ func run() error {
 	return nil
 }
 
-// xmlFile, err := ioutil.ReadFile("productbuild/test_data/distribution.xml")
+// xmlFile, err := ioutil.ReadFile("productbuild/testdata/distribution.xml")
 // if err != nil {
 // 	fmt.Println(err)
 // }
 
 // {
-// 	html := textconv.MarkdownFileToHTML("test_data/simple_markdown.md")
+// 	html := textconv.MarkdownFileToHTML("testdata/simple_markdown.md")
 // 	fmt.Println(string(html))
 // }
 // {
