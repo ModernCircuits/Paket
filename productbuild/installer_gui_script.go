@@ -1,6 +1,9 @@
 package productbuild
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+	"io/ioutil"
+)
 
 type InstallerGuiScript struct {
 	XMLName xml.Name `xml:"installer-gui-script" json:"-"`
@@ -29,6 +32,16 @@ func NewInstallerGuiScript(name string) InstallerGuiScript {
 
 		Title: name,
 	}
+}
+
+func ReadInstallerGuiScriptFile(path string) (*InstallerGuiScript, error) {
+	xmlBytes, err := ioutil.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	script := &InstallerGuiScript{}
+	return script, xml.Unmarshal(xmlBytes, script)
 }
 
 type Options struct {
