@@ -10,8 +10,7 @@ import (
 
 func MarkdownToHTML(md []byte) []byte {
 	maybeUnsafeHTML := markdown.ToHTML(md, nil, nil)
-	html := bluemonday.UGCPolicy().SanitizeBytes(maybeUnsafeHTML)
-	return gohtml.FormatBytes(html)
+	return bluemonday.UGCPolicy().SanitizeBytes(maybeUnsafeHTML)
 }
 
 func MarkdownFileToHTML(file string) []byte {
@@ -20,4 +19,8 @@ func MarkdownFileToHTML(file string) []byte {
 		return nil
 	}
 	return MarkdownToHTML(content)
+}
+
+func FormatHTML(html []byte) []byte {
+	return gohtml.FormatBytes(html)
 }
