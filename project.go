@@ -10,12 +10,12 @@ import (
 )
 
 type Project struct {
-	Name       string            `hcl:"name"`
-	Identifier string            `hcl:"identifier"`
-	Version    string            `hcl:"version"`
-	License    string            `hcl:"license,optional"`
-	WorkDir    string            `hcl:"work_dir,optional"`
-	Installer  []InstallerConfig `hcl:"installer,block"`
+	Name       string            `hcl:"name" json:"name"`
+	Identifier string            `hcl:"identifier" json:"identifier"`
+	Version    string            `hcl:"version" json:"version"`
+	License    string            `hcl:"license,optional" json:"license,omitempty"`
+	WorkDir    string            `hcl:"work_dir,optional" json:"work_dir,omitempty"`
+	Installer  []InstallerConfig `hcl:"installer,block" json:"installers,omitempty"`
 }
 
 func ReadFile(path string, ctx *hcl.EvalContext) (*Project, error) {
@@ -24,6 +24,14 @@ func ReadFile(path string, ctx *hcl.EvalContext) (*Project, error) {
 		return nil, fmt.Errorf("failed to load configuration: %v", err)
 	}
 	return &project, nil
+}
+
+func (p Project) Run() error {
+	if err := runMacOS(p); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func FileExists(name string) (bool, error) {

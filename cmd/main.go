@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/moderncircuits/paket"
 	"github.com/moderncircuits/paket/innosetup"
-	"github.com/moderncircuits/paket/productbuild"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -47,7 +46,7 @@ func run() error {
 		return err
 	}
 
-	err = productbuild.CreateDistributionXML(*project)
+	err = project.Run()
 	if err != nil {
 		return err
 	}
