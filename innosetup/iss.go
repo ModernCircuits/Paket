@@ -97,23 +97,28 @@ func (iss InnoSetupScript) Run() error {
 		return err
 	}
 
-	// issType := reflect.TypeOf(iss)
-	// examiner(issType, 0)
+	examiner(iss)
 
 	return nil
 }
 
-func examiner(t reflect.Type, depth int) {
+func examiner(iss InnoSetupScript) {
+	v := reflect.ValueOf(iss)
+	t := v.Type()
+	examinerImpl(t, 0)
+}
+
+func examinerImpl(t reflect.Type, depth int) {
 	fmt.Println(strings.Repeat("  ", depth), "Type is", t.Name(), "and kind is", t.Kind())
 	switch t.Kind() {
 	case reflect.Array, reflect.Chan, reflect.Map, reflect.Ptr, reflect.Slice:
 		fmt.Println(strings.Repeat("  ", depth+1), "Contained type:")
-		examiner(t.Elem(), depth+1)
+		examinerImpl(t.Elem(), depth+1)
 	case reflect.Struct:
 		for i := 0; i < t.NumField(); i++ {
 			f := t.Field(i)
 			if f.Type.Kind() == reflect.Struct {
-				examiner(f.Type, depth+1)
+				examinerImpl(f.Type, depth+1)
 			}
 			if f.Tag.Get("iss") != "" {
 				indent := strings.Repeat("  ", depth+1)

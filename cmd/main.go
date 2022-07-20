@@ -1,49 +1,31 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
-	"runtime"
 
-	"github.com/moderncircuits/paket"
+	"github.com/moderncircuits/paket/runtime"
 )
 
+// These variables get set during link time.
+// See Makefile.
+var (
+	hostOS string
+	commit string
+	date   string
+)
+
+func init() {
+	runtime.BuildCommit = commit
+	runtime.BuildDate = date
+	runtime.BuildOS = hostOS
+}
+
 func main() {
-	if err := run(); err != nil {
+	if err := execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-}
-
-func run() error {
-	project, err := paket.NewProject("testdata/full.hcl")
-	if err != nil {
-		return err
-	}
-
-	err = project.Run(runtime.GOOS)
-	if err != nil {
-		return err
-	}
-
-	err = project.Run("darwin")
-	if err != nil {
-		return err
-	}
-
-	jsonFile, err := json.MarshalIndent(project, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	err = ioutil.WriteFile("test.json", jsonFile, 0644)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 // xmlFile, err := ioutil.ReadFile("productbuild/testdata/distribution.xml")
