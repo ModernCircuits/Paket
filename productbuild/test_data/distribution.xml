@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<installer-gui-script minSpecVersion="1">
+    <pkg-ref id="com.modern-circuits.plugin-template.au" />
+    <pkg-ref id="com.modern-circuits.plugin-template.vst3" />
+    <pkg-ref id="com.modern-circuits.plugin-template.clap" />
+    <options
+            customize="never"
+            require-scripts="false"
+            hostArchitectures="x86_64,arm64" />
+    <choices-outline>
+        <line choice="default">
+            <line choice="com.modern-circuits.plugin-template.au" />
+            <line choice="com.modern-circuits.plugin-template.vst3" />
+            <line choice="com.modern-circuits.plugin-template.clap" />
+        </line>
+    </choices-outline>
+    <choice id="default" />
+    <choice
+            id="com.modern-circuits.plugin-template.au"
+            visible="false">
+        <pkg-ref id="com.modern-circuits.plugin-template.au" />
+    </choice>
+    <pkg-ref
+            id="com.modern-circuits.plugin-template.au"
+            version="0.1.0"
+            onConclusion="none">Plugin%20Template.au.pkg</pkg-ref>
+    <choice
+            id="com.modern-circuits.plugin-template.vst3"
+            visible="false">
+        <pkg-ref id="com.modern-circuits.plugin-template.vst3" />
+    </choice>
+    <pkg-ref
+            id="com.modern-circuits.plugin-template.vst3"
+            version="0.1.0"
+            onConclusion="none">Plugin%20Template.vst3.pkg</pkg-ref>
+    <choice
+            id="com.modern-circuits.plugin-template.clap"
+            visible="false">
+        <pkg-ref id="com.modern-circuits.plugin-template.clap" />
+    </choice>
+    <pkg-ref
+            id="com.modern-circuits.plugin-template.clap"
+            version="0.1.0"
+            onConclusion="none">Plugin%20Template.clap.pkg</pkg-ref>
+</installer-gui-script>
