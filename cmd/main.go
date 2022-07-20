@@ -8,6 +8,7 @@ import (
 
 	"github.com/hashicorp/hcl/v2/hclsimple"
 	"github.com/moderncircuits/paket"
+	"github.com/moderncircuits/paket/productbuild"
 )
 
 func main() {
@@ -18,18 +19,23 @@ func main() {
 }
 
 func run() error {
-	var config paket.Project
-	err := hclsimple.DecodeFile("test_data/config.hcl", nil, &config)
+	var project paket.Project
+	err := hclsimple.DecodeFile("test_data/config.hcl", nil, &project)
 	if err != nil {
 		return fmt.Errorf("failed to load configuration: %v", err)
 	}
 
-	jsonFile, err := json.MarshalIndent(config, "", "  ")
+	jsonFile, err := json.MarshalIndent(project, "", "  ")
 	if err != nil {
 		return err
 	}
 
 	err = ioutil.WriteFile("test.json", jsonFile, 0644)
+	if err != nil {
+		return err
+	}
+
+	err = productbuild.CreateDistributionXML(project)
 	if err != nil {
 		return err
 	}
