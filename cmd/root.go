@@ -17,7 +17,6 @@ var rootCmd = &cobra.Command{
 	RunE:  runRootCommand,
 }
 
-// runRootCommand runs if no subcommand was selected.
 func runRootCommand(cmd *cobra.Command, args []string) error {
 	fmt.Println("Root Command")
 	project, err := paket.NewProject("testdata/full.hcl")
@@ -30,17 +29,12 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	// err = project.Run("darwin")
-	// if err != nil {
-	// 	return err
-	// }
-
-	jsonFile, err := json.MarshalIndent(project, "", "  ")
+	js, err := json.MarshalIndent(project, "", "  ")
 	if err != nil {
 		return err
 	}
 
-	err = ioutil.WriteFile("test.json", jsonFile, 0644)
+	err = ioutil.WriteFile("test.json", js, 0644)
 	if err != nil {
 		return err
 	}
@@ -48,7 +42,6 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-// execute is the main entry point for the cli
 func execute() error {
 	if err := rootCmd.Execute(); err != nil {
 		return err

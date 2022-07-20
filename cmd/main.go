@@ -7,8 +7,7 @@ import (
 	"github.com/moderncircuits/paket/runtime"
 )
 
-// These variables get set during link time.
-// See Makefile.
+// These variables get set during link time. See Makefile.
 var (
 	hostOS string
 	commit string

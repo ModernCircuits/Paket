@@ -1,11 +1,5 @@
 package productbuild
 
-// productbuild                                        \
-//     --distribution "distribution-fixed.xml"         \
-//     --resources .                                   \
-//     --package-path "$out_dir"                       \
-//     "$out_dir/$plugin_name.pkg"                     \
-
 type Command struct {
 	Distribution InstallerGuiScript `json:"distribution"`
 	ResourcePath string             `json:"resourcePath"`
