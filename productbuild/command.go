@@ -51,8 +51,8 @@ func CreateDistributionXML(project paket.Project) error {
 		pkgBuild := pkgbuild.Command{
 			Identifier:      id,
 			Version:         version,
-			Component:       component.PayloadPath,
-			InstallLocation: component.InstallPath,
+			Component:       component.Payload,
+			InstallLocation: component.Destination,
 			Output:          fmt.Sprintf("%s.pkg", component.Tag),
 		}
 		err := pkgBuild.Run()

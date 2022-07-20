@@ -9,18 +9,18 @@ installer "macOS"  {
 
     component "AU" {
         name = "Audio Unit"
-        payload_path = "macOS/AU/Plugin Template.component"
-        install_path = "/Library/Audio/Plug-Ins/AU"
+        payload = "macOS/AU/Plugin Template.component"
+        destination = "/Library/Audio/Plug-Ins/AU"
     }
 
     component "VST3" {
-        payload_path = "macOS/VST3/Plugin Template.vst3"
-        install_path = "/Library/Audio/Plug-Ins/VST3"
+        payload = "macOS/VST3/Plugin Template.vst3"
+        destination = "/Library/Audio/Plug-Ins/VST3"
     }
 
     component "CLAP" {
-        payload_path = "macOS/CLAP/Plugin Template.clap"
-        install_path = "/Library/Audio/Plug-Ins/CLAP"
+        payload = "macOS/CLAP/Plugin Template.clap"
+        destination = "/Library/Audio/Plug-Ins/CLAP"
     }
 }
 
@@ -28,12 +28,12 @@ installer "Windows"  {
     uuid = "ASDFGH-JMKJH-GFDSDFGHJKL"
 
     component "VST3" {
-        payload_path = "Windows/VST3/Plugin Template.vst3"
-        install_path = "${windows.commoncf64}/VST3"
+        payload = "Windows/VST3/Plugin Template.vst3"
+        destination = "${windows.commoncf64}/VST3"
     }
 
     component "CLAP" {
-        payload_path = "Windows/CLAP/Plugin Template.clap"
-        install_path = "${windows.commoncf64}/CLAP"
+        payload = "Windows/CLAP/Plugin Template.clap"
+        destination = "${windows.commoncf64}/CLAP"
     }
 }
