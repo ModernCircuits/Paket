@@ -1,9 +1,7 @@
 package paket
 
 import (
-	"errors"
 	"fmt"
-	"os"
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsimple"
@@ -77,15 +75,4 @@ func (p Project) Run(platform string) error {
 
 func runNotImplemented(project Project) error {
 	return fmt.Errorf("not implemented for this platform")
-}
-
-func FileExists(name string) (bool, error) {
-	_, err := os.Stat(name)
-	if err == nil {
-		return true, nil
-	}
-	if errors.Is(err, os.ErrNotExist) {
-		return false, nil
-	}
-	return false, err
 }

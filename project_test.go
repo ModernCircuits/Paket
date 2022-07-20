@@ -12,6 +12,7 @@ func TestNewProject(t *testing.T) {
 		_, err := paket.NewProject("path/does/no/exist/config.hcl")
 		assert.Error(t, err)
 	}
+
 	{
 		project, err := paket.NewProject("testdata/minimal.hcl")
 		assert.NoError(t, err)
@@ -23,6 +24,7 @@ func TestNewProject(t *testing.T) {
 		assert.Empty(t, project.WorkDir)
 		assert.Len(t, project.Installer, 1)
 	}
+
 	{
 		project, err := paket.NewProject("testdata/full.hcl")
 		assert.NoError(t, err)
@@ -32,5 +34,14 @@ func TestNewProject(t *testing.T) {
 		assert.Equal(t, "com.modern-circuits.plugin-template", project.Identifier)
 		assert.Equal(t, "LICENSE.txt", project.License)
 		assert.Len(t, project.Installer, 2)
+	}
+
+	{
+		project, err := paket.NewProject("testdata/minimal.hcl")
+		assert.NoError(t, err)
+		err = project.Run("ios") // unimplemented
+		assert.Error(t, err)
+		err = project.Run("fooOS") // unknown
+		assert.Error(t, err)
 	}
 }
