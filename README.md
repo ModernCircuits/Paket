@@ -1,6 +1,8 @@
 # Modern Circuits - Paket
 
 [![License](https://img.shields.io/badge/License-Boost_1.0-lightblue.svg)](https://github.com/ModernCircuits/Paket/blob/main/LICENSE.txt)
+[![Test](https://github.com/ModernCircuits/Paket/actions/workflows/test.yml/badge.svg)](https://github.com/ModernCircuits/Paket/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/ModernCircuits/Paket/branch/main/graph/badge.svg?token=S8XON74JQU)](https://codecov.io/gh/ModernCircuits/Paket)
 [![Pre-Commit Hooks](https://github.com/ModernCircuits/Paket/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/ModernCircuits/Paket/actions/workflows/pre-commit.yml)
 
 Cross-platform installer generator. Primarily targets Windows `InnoSetup` & macOS `pkgbuild/productbuild`. Work in progress.
