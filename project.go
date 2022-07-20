@@ -33,7 +33,7 @@ func NewProject(path string) (*Project, error) {
 		},
 	}
 
-	project, err := ReadFile(path, ctx)
+	project, err := ReadProjectFile(path, ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func NewProject(path string) (*Project, error) {
 	return project, nil
 }
 
-func ReadFile(path string, ctx *hcl.EvalContext) (*Project, error) {
+func ReadProjectFile(path string, ctx *hcl.EvalContext) (*Project, error) {
 	var project Project
 	if err := hclsimple.DecodeFile(path, ctx, &project); err != nil {
 		return nil, fmt.Errorf("failed to load configuration: %v", err)
