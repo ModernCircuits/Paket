@@ -1,9 +1,8 @@
 package paket
 
 import (
-	"encoding/xml"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 
 	"github.com/moderncircuits/paket/pkgbuild"
@@ -16,13 +15,13 @@ func runMacOS(project Project) error {
 		return err
 	}
 
-	file, err := xml.MarshalIndent(script, "  ", "    ")
+	w, err := os.Create("test.xml")
 	if err != nil {
 		return err
 	}
+	defer w.Close()
 
-	err = ioutil.WriteFile("test.xml", []byte(xml.Header+string(file)), 0644)
-	if err != nil {
+	if err := script.WriteFile(w); err != nil {
 		return err
 	}
 

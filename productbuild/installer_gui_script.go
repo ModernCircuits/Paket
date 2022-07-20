@@ -2,6 +2,7 @@ package productbuild
 
 import (
 	"encoding/xml"
+	"io"
 	"io/ioutil"
 )
 
@@ -42,6 +43,16 @@ func ReadInstallerGuiScriptFile(path string) (*InstallerGuiScript, error) {
 
 	script := &InstallerGuiScript{}
 	return script, xml.Unmarshal(xmlBytes, script)
+}
+
+func (s InstallerGuiScript) WriteFile(w io.Writer) error {
+	file, err := xml.MarshalIndent(s, "  ", "    ")
+	if err != nil {
+		return err
+	}
+
+	_, err = w.Write([]byte(xml.Header + string(file)))
+	return err
 }
 
 type Options struct {

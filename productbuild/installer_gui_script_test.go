@@ -1,6 +1,7 @@
 package productbuild_test
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/moderncircuits/paket/productbuild"
@@ -36,4 +37,12 @@ func TestReadInstallerGuiScriptFile(t *testing.T) {
 		assert.Empty(t, script.Welcome)
 		assert.Empty(t, script.Conclusion)
 	}
+}
+
+func TestWriteFile(t *testing.T) {
+	buf := new(bytes.Buffer)
+	script := productbuild.NewInstallerGuiScript("FooBar")
+	err := script.WriteFile(buf)
+	assert.NoError(t, err)
+	assert.Contains(t, buf.String(), `<title>FooBar</title>`)
 }
