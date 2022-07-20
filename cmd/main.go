@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/moderncircuits/paket/runtime"
+	"github.com/moderncircuits/paket/cmd/runtime"
 )
 
 // These variables get set during link time. See Makefile.
@@ -26,17 +26,3 @@ func main() {
 		os.Exit(1)
 	}
 }
-
-// xmlFile, err := ioutil.ReadFile("productbuild/testdata/distribution.xml")
-// if err != nil {
-// 	fmt.Println(err)
-// }
-
-// {
-// 	html := textconv.MarkdownFileToHTML("testdata/simple_markdown.md")
-// 	fmt.Println(string(html))
-// }
-// {
-// 	html := textconv.MarkdownFileToHTML("LICENSE.txt")
-// 	fmt.Println(string(html))
-// }

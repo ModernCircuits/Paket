@@ -1,4 +1,4 @@
-package textconv
+package paket
 
 import (
 	"io/ioutil"

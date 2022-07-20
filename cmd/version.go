@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/moderncircuits/paket/runtime"
+	"github.com/moderncircuits/paket/cmd/runtime"
 )
 
 func init() {
