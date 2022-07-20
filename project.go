@@ -7,6 +7,8 @@ import (
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsimple"
+	"github.com/moderncircuits/paket/innosetup"
+	"github.com/zclconf/go-cty/cty"
 )
 
 type Project struct {
@@ -17,6 +19,26 @@ type Project struct {
 	License    string            `hcl:"license,optional" json:"license,omitempty"`
 	WorkDir    string            `hcl:"work_dir,optional" json:"work_dir,omitempty"`
 	Installer  []InstallerConfig `hcl:"installer,block" json:"installers,omitempty"`
+}
+
+func NewProject(path string) (*Project, error) {
+	windowsConstants := innosetup.DirectoryConstants()
+	windowsVars := map[string]cty.Value{}
+	for _, constant := range windowsConstants {
+		windowsVars[constant] = cty.StringVal(fmt.Sprintf("{%s}", constant))
+	}
+	ctx := &hcl.EvalContext{
+		Variables: map[string]cty.Value{
+			"windows": cty.ObjectVal(windowsVars),
+		},
+	}
+
+	project, err := ReadFile(path, ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return project, nil
 }
 
 func ReadFile(path string, ctx *hcl.EvalContext) (*Project, error) {

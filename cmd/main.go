@@ -7,10 +7,7 @@ import (
 	"os"
 	"runtime"
 
-	"github.com/hashicorp/hcl/v2"
 	"github.com/moderncircuits/paket"
-	"github.com/moderncircuits/paket/innosetup"
-	"github.com/zclconf/go-cty/cty"
 )
 
 func main() {
@@ -21,18 +18,17 @@ func main() {
 }
 
 func run() error {
-	windowsConstants := innosetup.DirectoryConstants()
-	windowsVars := map[string]cty.Value{}
-	for _, constant := range windowsConstants {
-		windowsVars[constant] = cty.StringVal(fmt.Sprintf("{%s}", constant))
-	}
-	ctx := &hcl.EvalContext{
-		Variables: map[string]cty.Value{
-			"windows": cty.ObjectVal(windowsVars),
-		},
+	project, err := paket.NewProject("testdata/full.hcl")
+	if err != nil {
+		return err
 	}
 
-	project, err := paket.ReadFile("testdata/minimal.hcl", ctx)
+	err = project.Run(runtime.GOOS)
+	if err != nil {
+		return err
+	}
+
+	err = project.Run("darwin")
 	if err != nil {
 		return err
 	}
@@ -43,11 +39,6 @@ func run() error {
 	}
 
 	err = ioutil.WriteFile("test.json", jsonFile, 0644)
-	if err != nil {
-		return err
-	}
-
-	err = project.Run(runtime.GOOS)
 	if err != nil {
 		return err
 	}

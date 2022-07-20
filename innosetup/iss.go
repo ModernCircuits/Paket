@@ -97,8 +97,8 @@ func (iss InnoSetupScript) Run() error {
 		return err
 	}
 
-	issType := reflect.TypeOf(iss)
-	examiner(issType, 0)
+	// issType := reflect.TypeOf(iss)
+	// examiner(issType, 0)
 
 	return nil
 }
