@@ -7,7 +7,6 @@ import (
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsimple"
-	"github.com/zclconf/go-cty/cty"
 )
 
 type Project struct {
@@ -15,18 +14,11 @@ type Project struct {
 	Identifier string            `hcl:"identifier"`
 	Version    string            `hcl:"version"`
 	License    string            `hcl:"license,optional"`
+	WorkDir    string            `hcl:"work_dir,optional"`
 	Installer  []InstallerConfig `hcl:"installer,block"`
 }
 
-func ReadFile(path string) (*Project, error) {
-	ctx := &hcl.EvalContext{
-		Variables: map[string]cty.Value{
-			"windows": cty.ObjectVal(map[string]cty.Value{
-				"commoncf64": cty.StringVal("{commoncf64}"),
-			}),
-		},
-	}
-
+func ReadFile(path string, ctx *hcl.EvalContext) (*Project, error) {
 	var project Project
 	if err := hclsimple.DecodeFile(path, ctx, &project); err != nil {
 		return nil, fmt.Errorf("failed to load configuration: %v", err)

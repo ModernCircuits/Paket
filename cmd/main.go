@@ -6,8 +6,11 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/hashicorp/hcl/v2"
 	"github.com/moderncircuits/paket"
+	"github.com/moderncircuits/paket/innosetup"
 	"github.com/moderncircuits/paket/productbuild"
+	"github.com/zclconf/go-cty/cty"
 )
 
 func main() {
@@ -18,7 +21,18 @@ func main() {
 }
 
 func run() error {
-	project, err := paket.ReadFile("testdata/config.hcl")
+	windowsConstants := innosetup.DirectoryConstants()
+	windowsVars := map[string]cty.Value{}
+	for _, constant := range windowsConstants {
+		windowsVars[constant] = cty.StringVal(fmt.Sprintf("{%s}", constant))
+	}
+	ctx := &hcl.EvalContext{
+		Variables: map[string]cty.Value{
+			"windows": cty.ObjectVal(windowsVars),
+		},
+	}
+
+	project, err := paket.ReadFile("testdata/config.hcl", ctx)
 	if err != nil {
 		return err
 	}
