@@ -21,6 +21,10 @@ deps:
 build:
 	go build -o $(BINARY_NAME) $(LINKER_FLAGS) ./cmd
 
+.PHONY: test
+test:
+	go test -cover -covermode=atomic ./...
+
 .PHONY: clean
 clean:
 	go clean
