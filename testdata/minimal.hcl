@@ -10,4 +10,3 @@ installer "macOS"  {
     }
 
 }
-

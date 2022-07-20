@@ -21,3 +21,5 @@ iss.json
 
 # Go workspace file
 go.work
+
+/venv
