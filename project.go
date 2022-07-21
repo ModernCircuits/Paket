@@ -37,7 +37,7 @@ func (p Project) RunTag(tag string) error {
 		return fmt.Errorf("no generator for tag %s", tag)
 	}
 
-	return generator.Configure(p, p.Installers[0])
+	return generator.ConfigureInstaller(p, p.Installers[0])
 }
 
 func (p *Project) RegisterGenerator(g Generator) error {
