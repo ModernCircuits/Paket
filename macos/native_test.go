@@ -46,8 +46,8 @@ func Test_CreateMacInstaller(t *testing.T) {
 
 }
 
-func TestNativeGenerator(t *testing.T) {
-	native := NativeGenerator{}
+func TestNative(t *testing.T) {
+	native := Native{}
 	out := &bytes.Buffer{}
 	assert.Implements(t, (*paket.Generator)(nil), &native)
 	assert.Equal(t, "macOS", native.Info().Tag)

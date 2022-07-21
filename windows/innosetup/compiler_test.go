@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGenerator(t *testing.T) {
-	inno := innosetup.Generator{}
+func TestCompiler(t *testing.T) {
+	inno := innosetup.Compiler{}
 	out := &bytes.Buffer{}
 	assert.Implements(t, (*paket.Generator)(nil), &inno)
 	assert.Equal(t, "InnoSetup", inno.Info().Tag)

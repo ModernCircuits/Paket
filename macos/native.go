@@ -12,19 +12,19 @@ import (
 
 type Task func() error
 
-type NativeGenerator struct {
+type Native struct {
 	installerScript productbuild.InstallerGuiScript
 	tasks           []Task
 }
 
-func (g *NativeGenerator) Info() paket.GeneratorInfo {
+func (g *Native) Info() paket.GeneratorInfo {
 	return paket.GeneratorInfo{
 		Tag:        "macOS",
 		RunnableOn: []string{"darwin"},
 	}
 }
 
-func (g *NativeGenerator) Configure(project paket.ProjectConfig, installer paket.InstallerConfig) error {
+func (g *Native) Configure(project paket.ProjectConfig, installer paket.InstallerConfig) error {
 	script, tasks, err := createMacInstaller(project, installer)
 	if err != nil {
 		return err
@@ -35,9 +35,9 @@ func (g *NativeGenerator) Configure(project paket.ProjectConfig, installer paket
 	return nil
 }
 
-func (g *NativeGenerator) Build(io.Writer) error { return nil }
+func (g *Native) Build(io.Writer) error { return nil }
 
-func (g *NativeGenerator) Run(io.Writer) error { return nil }
+func (g *Native) Run(io.Writer) error { return nil }
 
 func createMacInstaller(project paket.ProjectConfig, installer paket.InstallerConfig) (*productbuild.InstallerGuiScript, []Task, error) {
 	script := productbuild.NewInstallerGuiScript(project.Name)

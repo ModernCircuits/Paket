@@ -28,8 +28,8 @@ func runGenerateCommand(cmd *cobra.Command, args []string) error {
 
 	generators := []paket.Generator{
 		paket.NullGenerator{},
-		&macos.NativeGenerator{},
-		&innosetup.Generator{},
+		&macos.Native{},
+		&innosetup.Compiler{},
 	}
 
 	if err := registerGenerators(project, generators); err != nil {
