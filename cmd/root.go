@@ -1,10 +1,8 @@
 package main
 
 import (
-	"encoding/json"
-	"io/ioutil"
+	"errors"
 
-	"github.com/moderncircuits/paket"
 	"github.com/spf13/cobra"
 )
 
@@ -16,27 +14,7 @@ var rootCmd = &cobra.Command{
 }
 
 func runRootCommand(cmd *cobra.Command, args []string) error {
-	project, err := paket.NewProject("testdata/full.hcl")
-	if err != nil {
-		return err
-	}
-
-	err = project.RunTag("macOS")
-	if err != nil {
-		return err
-	}
-
-	js, err := json.MarshalIndent(project, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	err = ioutil.WriteFile("test.json", js, 0644)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return errors.New("no subcommand used")
 }
 
 func execute() error {
