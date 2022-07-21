@@ -17,29 +17,32 @@ type Native struct {
 	tasks           []Task
 }
 
-func (g *Native) Info() paket.GeneratorInfo {
+func (n *Native) Info() paket.GeneratorInfo {
 	return paket.GeneratorInfo{
 		Tag:        "macOS",
 		RunnableOn: []string{"darwin"},
 	}
 }
 
-func (g *Native) Configure(project paket.ProjectConfig, installer paket.InstallerConfig) error {
-	script, tasks, err := createMacInstaller(project, installer)
+func (n *Native) Configure(project paket.ProjectConfig, installer paket.InstallerConfig) error {
+	script, tasks, err := n.createMacInstaller(project, installer)
 	if err != nil {
 		return err
 	}
 
-	g.installerScript = *script
-	g.tasks = tasks
+	n.installerScript = *script
+	n.tasks = tasks
 	return nil
 }
 
-func (g *Native) Build(io.Writer) error { return nil }
+func (n *Native) Build(io.Writer) error { return nil }
 
-func (g *Native) Run(io.Writer) error { return nil }
+func (n *Native) Run(io.Writer) error { return nil }
 
-func createMacInstaller(project paket.ProjectConfig, installer paket.InstallerConfig) (*productbuild.InstallerGuiScript, []Task, error) {
+func (n *Native) createMacInstaller(project paket.ProjectConfig, installer paket.InstallerConfig) (*productbuild.InstallerGuiScript, []Task, error) {
+	if installer.OS != n.Info().Tag {
+		return nil, nil, fmt.Errorf("tag %q does not match generator tag %q", installer.OS, n.Info().Tag)
+	}
 	script := productbuild.NewInstallerGuiScript(project.Name)
 	tasks := []Task{}
 

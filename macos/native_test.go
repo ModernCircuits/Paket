@@ -8,40 +8,46 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_CreateMacInstaller(t *testing.T) {
+func Test_NativeConfigure(t *testing.T) {
 
 	{
-		path := "../testdata/minimal.hcl"
-
-		project, err := paket.ReadProjectConfigFile(path)
-		assert.NoError(t, err)
-
-		script, tasks, err := createMacInstaller(*project, project.Installers[0])
-		assert.NoError(t, err)
-		assert.NotNil(t, script)
-		assert.Equal(t, "Plugin Template", script.Title)
-		assert.Empty(t, script.License)
-		assert.Empty(t, script.Welcome)
-		assert.Empty(t, script.Conclusion)
-		assert.Len(t, script.Choices, 1)
-		assert.Len(t, tasks, 1)
+		config := paket.ProjectConfig{}
+		native := Native{}
+		err := native.Configure(config, paket.InstallerConfig{})
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), `does not match generator tag "macOS"`)
 	}
 
 	{
-		path := "../testdata/full.hcl"
-
-		project, err := paket.ReadProjectConfigFile(path)
+		config, err := paket.ReadProjectConfigFile("../testdata/minimal.hcl")
 		assert.NoError(t, err)
 
-		script, tasks, err := createMacInstaller(*project, project.Installers[0])
+		native := Native{}
+		err = native.Configure(*config, config.Installers[0])
 		assert.NoError(t, err)
-		assert.NotNil(t, script)
-		assert.Equal(t, "Plugin Template", script.Title)
-		assert.NotEmpty(t, script.License)
-		assert.NotEmpty(t, script.Welcome)
-		assert.NotEmpty(t, script.Conclusion)
-		assert.Len(t, script.Choices, 3)
-		assert.Len(t, tasks, 3)
+		assert.NotNil(t, native.installerScript)
+		assert.Equal(t, "Plugin Template", native.installerScript.Title)
+		assert.Empty(t, native.installerScript.License)
+		assert.Empty(t, native.installerScript.Welcome)
+		assert.Empty(t, native.installerScript.Conclusion)
+		assert.Len(t, native.installerScript.Choices, 1)
+		assert.Len(t, native.tasks, 1)
+	}
+
+	{
+		config, err := paket.ReadProjectConfigFile("../testdata/full.hcl")
+		assert.NoError(t, err)
+
+		native := Native{}
+		err = native.Configure(*config, config.Installers[0])
+		assert.NoError(t, err)
+		assert.NotNil(t, native.installerScript)
+		assert.Equal(t, "Plugin Template", native.installerScript.Title)
+		assert.NotEmpty(t, native.installerScript.License)
+		assert.NotEmpty(t, native.installerScript.Welcome)
+		assert.NotEmpty(t, native.installerScript.Conclusion)
+		assert.Len(t, native.installerScript.Choices, 3)
+		assert.Len(t, native.tasks, 3)
 	}
 
 }
@@ -51,7 +57,7 @@ func TestNative(t *testing.T) {
 	out := &bytes.Buffer{}
 	assert.Implements(t, (*paket.Generator)(nil), &native)
 	assert.Equal(t, "macOS", native.Info().Tag)
-	assert.NoError(t, native.Configure(paket.ProjectConfig{}, paket.InstallerConfig{}))
+	assert.Error(t, native.Configure(paket.ProjectConfig{}, paket.InstallerConfig{}))
 	assert.NoError(t, native.Build(out))
 	assert.NoError(t, native.Run(out))
 	assert.Empty(t, out.String())
