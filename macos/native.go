@@ -63,21 +63,15 @@ func createMacInstaller(project paket.ProjectConfig, installer paket.InstallerCo
 			version = component.Version
 		}
 
-		tasks = append(tasks, func() error {
-			pkgBuild := pkgbuild.Command{
-				Identifier:      id,
-				Version:         version,
-				Component:       component.Payload,
-				InstallLocation: component.Destination,
-				Output:          fmt.Sprintf("%s.pkg", component.Tag),
-			}
-			err := pkgBuild.Run()
-			if err != nil {
-				return err
-			}
+		pkgBuild := pkgbuild.Command{
+			Identifier:      id,
+			Version:         version,
+			Component:       component.Payload,
+			InstallLocation: component.Destination,
+			Output:          fmt.Sprintf("%s.pkg", component.Tag),
+		}
 
-			return nil
-		})
+		tasks = append(tasks, func() error { return pkgBuild.Run() })
 
 		line := productbuild.Line{Choice: id}
 		script.ChoicesOutline.Lines = append(script.ChoicesOutline.Lines, line)
