@@ -16,7 +16,7 @@ func Test_CreateMacInstaller(t *testing.T) {
 		project, err := paket.NewProject(path)
 		assert.NoError(t, err)
 
-		script, err := createMacInstaller(*project)
+		script, err := createMacInstaller(*project, project.Installers[0])
 		assert.NoError(t, err)
 		assert.NotNil(t, script)
 		assert.Equal(t, "Plugin Template", script.Title)
@@ -32,7 +32,7 @@ func Test_CreateMacInstaller(t *testing.T) {
 		project, err := paket.NewProject(path)
 		assert.NoError(t, err)
 
-		script, err := createMacInstaller(*project)
+		script, err := createMacInstaller(*project, project.Installers[0])
 		assert.NoError(t, err)
 		assert.NotNil(t, script)
 		assert.Equal(t, "Plugin Template", script.Title)

@@ -22,7 +22,7 @@ func TestNewProject(t *testing.T) {
 		assert.Equal(t, "com.modern-circuits.plugin-template", project.Identifier)
 		assert.Empty(t, project.License)
 		assert.Empty(t, project.WorkDir)
-		assert.Len(t, project.Installer, 1)
+		assert.Len(t, project.Installers, 1)
 	}
 
 	{
@@ -33,7 +33,7 @@ func TestNewProject(t *testing.T) {
 		assert.Equal(t, "0.1.0", project.Version)
 		assert.Equal(t, "com.modern-circuits.plugin-template", project.Identifier)
 		assert.Equal(t, "LICENSE.txt", project.License)
-		assert.Len(t, project.Installer, 2)
+		assert.Len(t, project.Installers, 2)
 	}
 
 	{

@@ -10,41 +10,41 @@ import (
 )
 
 type NativeGenerator struct {
+	installerScript productbuild.InstallerGuiScript
 }
 
-func (ng NativeGenerator) Tag() string                                          { return "macOS" }
-func (ng NativeGenerator) Configure(paket.Project, paket.InstallerConfig) error { return nil }
-func (ng NativeGenerator) Build(io.Writer) error                                { return nil }
-func (ng NativeGenerator) Run(io.Writer) error                                  { return nil }
+func (g NativeGenerator) Tag() string { return "macOS" }
 
-func createMacInstaller(project paket.Project) (*productbuild.InstallerGuiScript, error) {
+func (g *NativeGenerator) Configure(project paket.Project, installer paket.InstallerConfig) error {
+	script, err := createMacInstaller(project, installer)
+	if err != nil {
+		return err
+	}
+
+	g.installerScript = *script
+	return nil
+}
+
+func (g NativeGenerator) Build(io.Writer) error { return nil }
+
+func (g NativeGenerator) Run(io.Writer) error { return nil }
+
+func createMacInstaller(project paket.Project, installer paket.InstallerConfig) (*productbuild.InstallerGuiScript, error) {
 	script := productbuild.NewInstallerGuiScript(project.Name)
 
 	if project.License != "" {
 		script.License = &productbuild.License{File: project.License}
 	}
 
-	var macOS *paket.InstallerConfig
-	for _, installer := range project.Installer {
-		if installer.OS == "macOS" {
-			macOS = &installer
-			break
-		}
+	if installer.Welcome != "" {
+		script.Welcome = &productbuild.Welcome{File: installer.Welcome}
 	}
 
-	if macOS == nil {
-		return nil, fmt.Errorf("no macOS installer config found")
+	if installer.Conclusion != "" {
+		script.Conclusion = &productbuild.Conclusion{File: installer.Conclusion}
 	}
 
-	if macOS.Welcome != "" {
-		script.Welcome = &productbuild.Welcome{File: macOS.Welcome}
-	}
-
-	if macOS.Conclusion != "" {
-		script.Conclusion = &productbuild.Conclusion{File: macOS.Conclusion}
-	}
-
-	for _, component := range macOS.Components {
+	for _, component := range installer.Components {
 		id := fmt.Sprintf("%s.%s", project.Identifier, strings.ToLower(component.Tag))
 
 		// version := project.Version

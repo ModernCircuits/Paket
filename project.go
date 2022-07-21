@@ -14,7 +14,7 @@ type Project struct {
 	Version    string            `hcl:"version" json:"version"`
 	License    string            `hcl:"license,optional" json:"license,omitempty"`
 	WorkDir    string            `hcl:"work_dir,optional" json:"work_dir,omitempty"`
-	Installer  []InstallerConfig `hcl:"installer,block" json:"installers,omitempty"`
+	Installers []InstallerConfig `hcl:"installer,block" json:"installers,omitempty"`
 
 	generators []Generator
 }
@@ -37,7 +37,7 @@ func (p Project) RunTag(tag string) error {
 		return fmt.Errorf("no generator for tag %s", tag)
 	}
 
-	return generator.Configure(p, p.Installer[0])
+	return generator.Configure(p, p.Installers[0])
 }
 
 func (p *Project) RegisterGenerator(g Generator) error {
