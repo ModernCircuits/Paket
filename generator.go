@@ -15,12 +15,12 @@ type Generator interface {
 
 	// Coverts the global project configuration into a more
 	// specfic form understood by this generator.
-	ConfigureInstaller(ProjectConfig, InstallerConfig) error
+	Configure(ProjectConfig, InstallerConfig) error
 
 	// Creates the build  environment including folders and
 	// configuration files needed by the generator.
-	BuildInstaller(io.Writer) error
+	Build(io.Writer) error
 
 	// Runs the generator. This may be a no-op for some generators.
-	RunInstaller(io.Writer) error
+	Run(io.Writer) error
 }

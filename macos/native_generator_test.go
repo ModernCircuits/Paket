@@ -47,11 +47,12 @@ func Test_CreateMacInstaller(t *testing.T) {
 }
 
 func TestNativeGenerator(t *testing.T) {
-	null := NativeGenerator{}
+	native := NativeGenerator{}
 	out := &bytes.Buffer{}
-	assert.Equal(t, "macOS", null.Info().Tag)
-	assert.NoError(t, null.ConfigureInstaller(paket.ProjectConfig{}, paket.InstallerConfig{}))
-	assert.NoError(t, null.BuildInstaller(out))
-	assert.NoError(t, null.RunInstaller(out))
+	assert.Implements(t, (*paket.Generator)(nil), &native)
+	assert.Equal(t, "macOS", native.Info().Tag)
+	assert.NoError(t, native.Configure(paket.ProjectConfig{}, paket.InstallerConfig{}))
+	assert.NoError(t, native.Build(out))
+	assert.NoError(t, native.Run(out))
 	assert.Empty(t, out.String())
 }

@@ -17,14 +17,14 @@ type NativeGenerator struct {
 	tasks           []Task
 }
 
-func (g NativeGenerator) Info() paket.GeneratorInfo {
+func (g *NativeGenerator) Info() paket.GeneratorInfo {
 	return paket.GeneratorInfo{
 		Tag:        "macOS",
 		RunnableOn: []string{"darwin"},
 	}
 }
 
-func (g *NativeGenerator) ConfigureInstaller(project paket.ProjectConfig, installer paket.InstallerConfig) error {
+func (g *NativeGenerator) Configure(project paket.ProjectConfig, installer paket.InstallerConfig) error {
 	script, tasks, err := createMacInstaller(project, installer)
 	if err != nil {
 		return err
@@ -35,9 +35,9 @@ func (g *NativeGenerator) ConfigureInstaller(project paket.ProjectConfig, instal
 	return nil
 }
 
-func (g NativeGenerator) BuildInstaller(io.Writer) error { return nil }
+func (g *NativeGenerator) Build(io.Writer) error { return nil }
 
-func (g NativeGenerator) RunInstaller(io.Writer) error { return nil }
+func (g *NativeGenerator) Run(io.Writer) error { return nil }
 
 func createMacInstaller(project paket.ProjectConfig, installer paket.InstallerConfig) (*productbuild.InstallerGuiScript, []Task, error) {
 	script := productbuild.NewInstallerGuiScript(project.Name)
