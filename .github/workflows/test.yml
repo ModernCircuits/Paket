@@ -18,9 +18,6 @@ jobs:
         with:
           go-version: 1.18.x
 
-      - name: Run basic tests
-        run: go test ./...
-
       - name: Run race detector tests
         if: runner.os != 'Windows'
         run: go test -race ./...
@@ -28,6 +25,10 @@ jobs:
       - name: Run coverage
         if: runner.os == 'Linux'
         run: go test -coverprofile=coverage.out -covermode=atomic ./...
+
+      - name: Run coverage
+        if: runner.os != 'Linux'
+        run: go test -coverprofile=coverage.out ./...
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
