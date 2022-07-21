@@ -3,6 +3,7 @@ package innosetup
 import (
 	"fmt"
 	"io"
+	"os"
 	"reflect"
 )
 
@@ -84,8 +85,8 @@ func (iss InnoSetupScript) WriteFile(w io.Writer) error {
 	e := reflect.ValueOf(&iss.Setup).Elem()
 	for i := 0; i < e.NumField(); i++ {
 		varName := e.Type().Field(i).Name
-		varValue := e.Field(i).Interface()
 		varType := e.Type().Field(i).Type
+		varValue := e.Field(i).Interface()
 		switch varType.Kind() {
 		case reflect.String:
 			if str := varValue.(string); str != "" {
@@ -103,4 +104,27 @@ func (iss InnoSetupScript) WriteFile(w io.Writer) error {
 	}
 
 	return nil
+}
+
+func ReadFile(path string) (*InnoSetupScript, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	return Parse(f)
+}
+
+func Parse(r io.Reader) (*InnoSetupScript, error) {
+	lines := removeAllCommentLines(readAllLines(r))
+	setup, err := parseSetupSection(lines)
+	if err != nil {
+		return nil, err
+	}
+
+	iss := &InnoSetupScript{
+		Setup: *setup,
+	}
+	return iss, nil
 }
