@@ -10,12 +10,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewInnoSetupScript(t *testing.T) {
+func TestNewISS(t *testing.T) {
 	{
 		project, err := paket.ReadProjectConfigFile("../../testdata/full.hcl")
 		assert.NoError(t, err)
 
-		iss := innosetup.NewInnoSetupScript(project.Name, project.Vendor)
+		iss := innosetup.NewISS(project.Name, project.Vendor)
 		assert.Equal(t, "Plugin Template", iss.Setup.AppName)
 		assert.Equal(t, "Modern Circuits", iss.Setup.AppPublisher)
 		assert.Equal(t, "modern", iss.Setup.WizardStyle)
@@ -43,8 +43,8 @@ func TestReadFile(t *testing.T) {
 		assert.Nil(t, iss)
 	})
 
-	t.Run("ErrNoSetupSection", func(t *testing.T) {
-		iss, err := innosetup.ReadFile("testdata/ErrNoSetupSection.iss")
+	t.Run("ErrNoSetup", func(t *testing.T) {
+		iss, err := innosetup.ReadFile("testdata/ErrNoSetup.iss")
 		assert.Error(t, err)
 		assert.Nil(t, iss)
 	})

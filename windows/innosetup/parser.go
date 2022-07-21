@@ -8,13 +8,13 @@ import (
 	"strings"
 )
 
-func parseSetupSection(lines []string) (*SetupSection, error) {
+func parseSetup(lines []string) (*Setup, error) {
 	m, err := parseLinesToMap(lines)
 	if err != nil {
 		return nil, err
 	}
 
-	setup := &SetupSection{}
+	setup := &Setup{}
 	for k, v := range m {
 		if err := setSetupStructField(setup, k, v); err != nil {
 			return nil, err
@@ -24,7 +24,7 @@ func parseSetupSection(lines []string) (*SetupSection, error) {
 	return setup, nil
 }
 
-func setSetupStructField(setup *SetupSection, tag string, value string) error {
+func setSetupStructField(setup *Setup, tag string, value string) error {
 	e := reflect.ValueOf(setup).Elem()
 	set := false
 	for i := 0; i < e.NumField(); i++ {
@@ -129,7 +129,7 @@ func splitSectionLines(lines []string) map[string][]string {
 	return sections
 }
 
-func getSetupSectionLines(lines []string) ([]string, error) {
+func getSetupLines(lines []string) ([]string, error) {
 	sectionLines, ok := splitSectionLines(lines)["Setup"]
 	if !ok {
 		return nil, fmt.Errorf("no [Setup] section found")

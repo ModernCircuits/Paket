@@ -7,9 +7,93 @@ import (
 	"reflect"
 )
 
-// SetupSection represents the [setup] section of an iss file.
+type ISS struct {
+	Setup Setup `json:"setup"`
+}
+
+func NewISS(projectName string, vendor string) ISS {
+	return ISS{
+		Setup: Setup{
+			AppName:      projectName,
+			AppPublisher: vendor,
+
+			DefaultGroupName:   projectName,
+			DefaultDirName:     fmt.Sprintf("{commonpf}\\%s\\%s", vendor, projectName),
+			OutputBaseFilename: fmt.Sprintf("%s Installer", projectName),
+
+			Compression:      "lzma2",
+			SolidCompression: true,
+			SetupLogging:     true,
+
+			ArchitecturesAllowed:            "x64",
+			ArchitecturesInstallIn64BitMode: "x64",
+
+			UninstallDisplayIcon:     "{app}\\Plugin Template.exe",
+			UninstallFilesDir:        "{app}\\uninst",
+			UninstallRestartComputer: false,
+
+			WizardResizable: false,
+			WizardStyle:     "modern",
+		},
+	}
+}
+
+func (iss ISS) WriteFile(w io.Writer) error {
+	e := reflect.ValueOf(&iss.Setup).Elem()
+	for i := 0; i < e.NumField(); i++ {
+		varName := e.Type().Field(i).Name
+		varType := e.Type().Field(i).Type
+		varValue := e.Field(i).Interface()
+		switch varType.Kind() {
+		case reflect.String:
+			if str := varValue.(string); str != "" {
+				fmt.Fprintf(w, "%v=%q\n", varName, str)
+			}
+		case reflect.Bool:
+			txt := "no"
+			if varValue.(bool) {
+				txt = "yes"
+			}
+			fmt.Fprintf(w, "%v=%v\n", varName, txt)
+		default:
+			return fmt.Errorf("unimplemented type %v", varType)
+		}
+	}
+
+	return nil
+}
+
+func ReadFile(path string) (*ISS, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	return Parse(f)
+}
+
+func Parse(r io.Reader) (*ISS, error) {
+	lines := removeAllCommentLines(readAllLines(r))
+
+	setupLines, err := getSetupLines(lines)
+	if err != nil {
+		return nil, err
+	}
+
+	setup, err := parseSetup(setupLines)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ISS{
+		Setup: *setup,
+	}, nil
+}
+
+// Setup represents the [Setup] section of an iss file.
 // https://jrsoftware.org/ishelp/index.php?topic=setupsection
-type SetupSection struct {
+type Setup struct {
 	AppId           string `iss:"AppId,omitempty" json:"AppId,omitempty"`
 	AppName         string `iss:"AppName,omitempty" json:"AppName,omitempty"`
 	AppPublisher    string `iss:"AppPublisher,omitempty" json:"AppPublisher,omitempty"`
@@ -50,88 +134,4 @@ type SetupSection struct {
 	WizardSmallImageFile string `iss:"WizardSmallImageFile,omitempty" json:"WizardSmallImageFile,omitempty"`
 	WizardResizable      bool   `iss:"WizardResizable,omitempty" json:"WizardResizable,omitempty"`
 	WizardStyle          string `iss:"WizardStyle,omitempty" json:"WizardStyle,omitempty"`
-}
-
-type InnoSetupScript struct {
-	Setup SetupSection `json:"setup"`
-}
-
-func NewInnoSetupScript(projectName string, vendor string) InnoSetupScript {
-	return InnoSetupScript{
-		Setup: SetupSection{
-			AppName:      projectName,
-			AppPublisher: vendor,
-
-			DefaultGroupName:   projectName,
-			DefaultDirName:     fmt.Sprintf("{commonpf}\\%s\\%s", vendor, projectName),
-			OutputBaseFilename: fmt.Sprintf("%s Installer", projectName),
-
-			Compression:      "lzma2",
-			SolidCompression: true,
-			SetupLogging:     true,
-
-			ArchitecturesAllowed:            "x64",
-			ArchitecturesInstallIn64BitMode: "x64",
-
-			UninstallDisplayIcon:     "{app}\\Plugin Template.exe",
-			UninstallFilesDir:        "{app}\\uninst",
-			UninstallRestartComputer: false,
-
-			WizardResizable: false,
-			WizardStyle:     "modern",
-		},
-	}
-}
-
-func (iss InnoSetupScript) WriteFile(w io.Writer) error {
-	e := reflect.ValueOf(&iss.Setup).Elem()
-	for i := 0; i < e.NumField(); i++ {
-		varName := e.Type().Field(i).Name
-		varType := e.Type().Field(i).Type
-		varValue := e.Field(i).Interface()
-		switch varType.Kind() {
-		case reflect.String:
-			if str := varValue.(string); str != "" {
-				fmt.Fprintf(w, "%v=%q\n", varName, str)
-			}
-		case reflect.Bool:
-			txt := "no"
-			if varValue.(bool) {
-				txt = "yes"
-			}
-			fmt.Fprintf(w, "%v=%v\n", varName, txt)
-		default:
-			return fmt.Errorf("unimplemented type %v", varType)
-		}
-	}
-
-	return nil
-}
-
-func ReadFile(path string) (*InnoSetupScript, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	return Parse(f)
-}
-
-func Parse(r io.Reader) (*InnoSetupScript, error) {
-	lines := removeAllCommentLines(readAllLines(r))
-
-	setupLines, err := getSetupSectionLines(lines)
-	if err != nil {
-		return nil, err
-	}
-
-	setup, err := parseSetupSection(setupLines)
-	if err != nil {
-		return nil, err
-	}
-
-	return &InnoSetupScript{
-		Setup: *setup,
-	}, nil
 }

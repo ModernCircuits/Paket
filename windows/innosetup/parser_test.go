@@ -21,13 +21,13 @@ func TestParserInternals(t *testing.T) {
 	assert.NotEmpty(t, withoutComments)
 	assert.Len(t, withoutComments, 16)
 
-	setup, err := getSetupSectionLines(withoutComments)
+	setup, err := getSetupLines(withoutComments)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, setup)
 	assert.Len(t, setup, 9)
 }
 
-func Test_parseSetupSection(t *testing.T) {
+func Test_parseSetup(t *testing.T) {
 	tests := [][]string{
 		{"com.foo.bar"},
 		{"=foobar"},
@@ -36,7 +36,7 @@ func Test_parseSetupSection(t *testing.T) {
 
 	for i, tc := range tests {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
-			setup, err := parseSetupSection(tc)
+			setup, err := parseSetup(tc)
 			assert.Error(t, err)
 			assert.Empty(t, setup)
 		})
