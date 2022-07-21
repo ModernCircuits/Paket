@@ -9,6 +9,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestCommandMissingBinary(t *testing.T) {
+	script := pkgbuild.Command{
+		Identifier:      "com.foo.app",
+		Version:         "1.0",
+		Component:       "foo.app",
+		InstallLocation: "/usr/local/foo",
+		Output:          "foo.pkg",
+	}
+	script.SetExecutable("/bin/doesnotexist", nil)
+	err := script.Run()
+	assert.Error(t, err)
+}
+
 func TestCommandRunMissingArgs(t *testing.T) {
 	tests := []pkgbuild.Command{
 		{},

@@ -35,10 +35,8 @@ func (c *Command) Run() error {
 		return errors.New("pkgbuild: output path is required")
 	}
 
-	var cmd *exec.Cmd
-	if c.executable == "" {
-		cmd = exec.Command("pkgbuild")
-	} else {
+	cmd := exec.Command("pkgbuild")
+	if c.executable != "" {
 		cmd = exec.Command(c.executable, c.args...)
 	}
 
@@ -47,8 +45,6 @@ func (c *Command) Run() error {
 	cmd.Args = append(cmd.Args, "--component", c.Component)
 	cmd.Args = append(cmd.Args, "--install-location", c.InstallLocation)
 	cmd.Args = append(cmd.Args, c.Output)
-
-	fmt.Printf("%v\n", cmd)
 
 	outBytes, err := cmd.CombinedOutput()
 	if err != nil {
@@ -63,7 +59,9 @@ func (c *Command) Run() error {
 
 func (c *Command) SetExecutable(cmd string, args []string) {
 	c.executable = cmd
-	c.args = args
+	if args != nil {
+		c.args = args
+	}
 }
 
 func (c Command) GetCombinedOutput() (string, error) {

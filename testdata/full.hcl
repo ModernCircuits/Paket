@@ -10,6 +10,7 @@ installer "macOS" {
 
   component "AU" {
     name        = "Audio Unit"
+    version     = "0.1.1"
     payload     = "macOS/AU/Plugin Template.component"
     destination = "/Library/Audio/Plug-Ins/AU"
   }
