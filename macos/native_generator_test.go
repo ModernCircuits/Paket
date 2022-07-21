@@ -13,7 +13,7 @@ func Test_CreateMacInstaller(t *testing.T) {
 	{
 		path := "../testdata/minimal.hcl"
 
-		project, err := paket.NewProject(path)
+		project, err := paket.ReadProjectConfigFile(path)
 		assert.NoError(t, err)
 
 		script, tasks, err := createMacInstaller(*project, project.Installers[0])
@@ -30,7 +30,7 @@ func Test_CreateMacInstaller(t *testing.T) {
 	{
 		path := "../testdata/full.hcl"
 
-		project, err := paket.NewProject(path)
+		project, err := paket.ReadProjectConfigFile(path)
 		assert.NoError(t, err)
 
 		script, tasks, err := createMacInstaller(*project, project.Installers[0])
@@ -50,8 +50,8 @@ func TestNativeGenerator(t *testing.T) {
 	null := NativeGenerator{}
 	out := &bytes.Buffer{}
 	assert.Equal(t, "macOS", null.Tag())
-	assert.NoError(t, null.Configure(paket.Project{}, paket.InstallerConfig{}))
-	assert.NoError(t, null.Build(out))
-	assert.NoError(t, null.Run(out))
+	assert.NoError(t, null.ConfigureInstaller(paket.ProjectConfig{}, paket.InstallerConfig{}))
+	assert.NoError(t, null.BuildInstaller(out))
+	assert.NoError(t, null.RunInstaller(out))
 	assert.Empty(t, out.String())
 }

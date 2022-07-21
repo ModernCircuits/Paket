@@ -10,7 +10,7 @@ type Generator interface {
 
 	// Coverts the global project configuration into a more
 	// specfic form understood by this generator.
-	ConfigureInstaller(Project, InstallerConfig) error
+	ConfigureInstaller(ProjectConfig, InstallerConfig) error
 
 	// Creates the build  environment including folders and
 	// configuration files needed by the generator.

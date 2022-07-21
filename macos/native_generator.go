@@ -19,7 +19,7 @@ type NativeGenerator struct {
 
 func (g NativeGenerator) Tag() string { return "macOS" }
 
-func (g *NativeGenerator) Configure(project paket.Project, installer paket.InstallerConfig) error {
+func (g *NativeGenerator) ConfigureInstaller(project paket.ProjectConfig, installer paket.InstallerConfig) error {
 	script, tasks, err := createMacInstaller(project, installer)
 	if err != nil {
 		return err
@@ -30,11 +30,11 @@ func (g *NativeGenerator) Configure(project paket.Project, installer paket.Insta
 	return nil
 }
 
-func (g NativeGenerator) Build(io.Writer) error { return nil }
+func (g NativeGenerator) BuildInstaller(io.Writer) error { return nil }
 
-func (g NativeGenerator) Run(io.Writer) error { return nil }
+func (g NativeGenerator) RunInstaller(io.Writer) error { return nil }
 
-func createMacInstaller(project paket.Project, installer paket.InstallerConfig) (*productbuild.InstallerGuiScript, []Task, error) {
+func createMacInstaller(project paket.ProjectConfig, installer paket.InstallerConfig) (*productbuild.InstallerGuiScript, []Task, error) {
 	script := productbuild.NewInstallerGuiScript(project.Name)
 	tasks := []Task{}
 

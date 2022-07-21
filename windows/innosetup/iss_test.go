@@ -11,7 +11,7 @@ import (
 
 func TestNewInnoSetupScript(t *testing.T) {
 	{
-		project, err := paket.NewProject("../../testdata/full.hcl")
+		project, err := paket.ReadProjectConfigFile("../../testdata/full.hcl")
 		assert.NoError(t, err)
 
 		iss := innosetup.NewInnoSetupScript(project.Name, project.Vendor)
