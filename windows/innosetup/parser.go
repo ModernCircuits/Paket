@@ -82,6 +82,11 @@ func readAllLines(r io.Reader) []string {
 	for scanner.Scan() {
 		lines = append(lines, strings.Trim(scanner.Text(), " \t\r\n"))
 	}
+
+	if err := scanner.Err(); err != nil {
+		return []string{}
+	}
+
 	return lines
 }
 

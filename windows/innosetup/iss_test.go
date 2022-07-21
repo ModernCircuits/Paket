@@ -2,6 +2,7 @@ package innosetup_test
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 
 	"github.com/moderncircuits/paket"
@@ -63,4 +64,22 @@ func TestReadFile(t *testing.T) {
 		assert.True(t, iss.Setup.SolidCompression)
 	})
 
+}
+
+func TestReadFileNoErrors(t *testing.T) {
+	tests := []string{
+		"64Bit",
+		"Example1",
+		"Example2",
+		"Example3",
+	}
+
+	for _, tc := range tests {
+		file := fmt.Sprintf("testdata/%s.iss", tc)
+		t.Run(file, func(t *testing.T) {
+			setup, err := innosetup.ReadFile(file)
+			assert.NoError(t, err)
+			assert.NotEmpty(t, setup)
+		})
+	}
 }

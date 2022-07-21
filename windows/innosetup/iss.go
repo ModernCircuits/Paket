@@ -21,23 +21,29 @@ type SetupSection struct {
 	ArchitecturesAllowed            string `iss:"ArchitecturesAllowed,omitempty" json:"ArchitecturesAllowed,omitempty"`
 	ArchitecturesInstallIn64BitMode string `iss:"ArchitecturesInstallIn64BitMode,omitempty" json:"ArchitecturesInstallIn64BitMode,omitempty"`
 
-	Compression      string `iss:"Compression,omitempty" json:"Compression,omitempty"`
-	DefaultDirName   string `iss:"DefaultDirName,omitempty" json:"DefaultDirName,omitempty"`
-	DefaultGroupName string `iss:"DefaultGroupName,omitempty" json:"DefaultGroupName,omitempty"`
+	ChangesAssociations     bool   `iss:"ChangesAssociations,omitempty" json:"ChangesAssociations,omitempty"`
+	Compression             string `iss:"Compression,omitempty" json:"Compression,omitempty"`
+	DefaultDirName          string `iss:"DefaultDirName,omitempty" json:"DefaultDirName,omitempty"`
+	DefaultGroupName        string `iss:"DefaultGroupName,omitempty" json:"DefaultGroupName,omitempty"`
+	DisableProgramGroupPage bool   `iss:"DisableProgramGroupPage,omitempty" json:"DisableProgramGroupPage,omitempty"`
 
 	LicenseFile string `iss:"LicenseFile,omitempty" json:"LicenseFile,omitempty"`
 
 	InfoAfterFile  string `iss:"InfoAfterFile,omitempty" json:"InfoAfterFile,omitempty"`
 	InfoBeforeFile string `iss:"InfoBeforeFile,omitempty" json:"InfoBeforeFile,omitempty"`
 
-	OutputDir          string `iss:"OutputDir,omitempty" json:"OutputDir,omitempty"`
-	OutputBaseFilename string `iss:"OutputBaseFilename,omitempty" json:"OutputBaseFilename,omitempty"`
-	SolidCompression   bool   `iss:"SolidCompression,omitempty" json:"SolidCompression,omitempty"`
-	SetupLogging       bool   `iss:"SetupLogging,omitempty" json:"SetupLogging,omitempty"`
+	OutputDir                          string `iss:"OutputDir,omitempty" json:"OutputDir,omitempty"`
+	OutputBaseFilename                 string `iss:"OutputBaseFilename,omitempty" json:"OutputBaseFilename,omitempty"`
+	PrivilegesRequiredOverridesAllowed bool   `iss:"PrivilegesRequiredOverridesAllowed,omitempty" json:"PrivilegesRequiredOverridesAllowed,omitempty"`
+
+	SolidCompression bool `iss:"SolidCompression,omitempty" json:"SolidCompression,omitempty"`
+	SetupLogging     bool `iss:"SetupLogging,omitempty" json:"SetupLogging,omitempty"`
 
 	UninstallDisplayIcon     string `iss:"UninstallDisplayIcon,omitempty" json:"UninstallDisplayIcon,omitempty"`
 	UninstallFilesDir        string `iss:"UninstallFilesDir,omitempty" json:"UninstallFilesDir,omitempty"`
 	UninstallRestartComputer bool   `iss:"UninstallRestartComputer,omitempty" json:"UninstallRestartComputer,omitempty"`
+
+	UserInfoPage bool `iss:"UserInfoPage,omitempty" json:"UserInfoPage,omitempty"`
 
 	SetupIconFile        string `iss:"SetupIconFile,omitempty" json:"SetupIconFile,omitempty"`
 	WizardImageFile      string `iss:"WizardImageFile,omitempty" json:"WizardImageFile,omitempty"`
