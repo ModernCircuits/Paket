@@ -21,26 +21,27 @@ var generateCmd = &cobra.Command{
 }
 
 func runGenerateCommand(cmd *cobra.Command, args []string) error {
-	project, err := paket.NewProject("testdata/full.hcl")
-	if err != nil {
-		return err
-	}
-
+	runner := paket.NewRunner()
 	generators := []paket.Generator{
 		paket.NullGenerator{},
 		&macos.Native{},
 		&innosetup.Compiler{},
 	}
 
-	if err := registerGenerators(project, generators); err != nil {
+	if err := registerGenerators(runner, generators); err != nil {
 		return err
 	}
 
-	if err := project.RunTag("Windows"); err != nil {
+	config, err := paket.ReadProjectConfigFile("testdata/full.hcl")
+	if err != nil {
 		return err
 	}
 
-	js, err := json.MarshalIndent(project, "", "  ")
+	if err := runner.RunTag(*config, "Windows"); err != nil {
+		return err
+	}
+
+	js, err := json.MarshalIndent(runner, "", "  ")
 	if err != nil {
 		return err
 	}
@@ -53,9 +54,9 @@ func runGenerateCommand(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func registerGenerators(project *paket.Project, generators []paket.Generator) error {
+func registerGenerators(runner *paket.Runner, generators []paket.Generator) error {
 	for _, generator := range generators {
-		if err := project.RegisterGenerator(generator); err != nil {
+		if err := runner.RegisterGenerator(generator); err != nil {
 			return err
 		}
 	}
