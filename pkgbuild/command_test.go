@@ -53,10 +53,14 @@ func TestCommandRunEchoArgs(t *testing.T) {
 		t.Run(fmt.Sprintf("id: %s", tc.Identifier), func(t *testing.T) {
 			tc.SetExecutable(pythonExe(), []string{"../testdata/bin/echo.py"})
 
-			err := tc.Run()
+			out, err := tc.GetCombinedOutput()
+			assert.Error(t, err)
+			assert.Empty(t, out, tc.Output)
+
+			err = tc.Run()
 			assert.NoError(t, err)
 
-			out, err := tc.GetCombinedOutput()
+			out, err = tc.GetCombinedOutput()
 			assert.NoError(t, err)
 			assert.Contains(t, out, tc.Output)
 			assert.Contains(t, out, fmt.Sprintf("--identifier %s", tc.Identifier))
