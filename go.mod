@@ -4,7 +4,6 @@ go 1.18
 
 require (
 	github.com/gomarkdown/markdown v0.0.0-20220627144906-e9a81102ebeb
-	github.com/google/uuid v1.3.0
 	github.com/hashicorp/hcl/v2 v2.13.0
 	github.com/microcosm-cc/bluemonday v1.0.19
 	github.com/spf13/cobra v1.5.0
