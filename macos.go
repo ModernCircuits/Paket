@@ -5,7 +5,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/moderncircuits/paket/pkgbuild"
 	"github.com/moderncircuits/paket/productbuild"
 )
 
@@ -69,22 +68,22 @@ func createMacInstaller(project Project) (*productbuild.InstallerGuiScript, erro
 	for _, component := range macOS.Components {
 		id := fmt.Sprintf("%s.%s", project.Identifier, strings.ToLower(component.Tag))
 
-		version := project.Version
-		if component.Version != "" {
-			version = component.Version
-		}
+		// version := project.Version
+		// if component.Version != "" {
+		// 	version = component.Version
+		// }
 
-		pkgBuild := pkgbuild.Command{
-			Identifier:      id,
-			Version:         version,
-			Component:       component.Payload,
-			InstallLocation: component.Destination,
-			Output:          fmt.Sprintf("%s.pkg", component.Tag),
-		}
-		err := pkgBuild.Run()
-		if err != nil {
-			return nil, err
-		}
+		// pkgBuild := pkgbuild.Command{
+		// 	Identifier:      id,
+		// 	Version:         version,
+		// 	Component:       component.Payload,
+		// 	InstallLocation: component.Destination,
+		// 	Output:          fmt.Sprintf("%s.pkg", component.Tag),
+		// }
+		// err := pkgBuild.Run()
+		// if err != nil {
+		// 	return nil, err
+		// }
 
 		line := productbuild.Line{Choice: id}
 		script.ChoicesOutline.Lines = append(script.ChoicesOutline.Lines, line)

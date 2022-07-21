@@ -12,9 +12,13 @@ type Command struct {
 	Component       string
 	InstallLocation string
 	Output          string
+
+	executable string
+	args       []string
+	cmdOutput  *string
 }
 
-func (c Command) Run() error {
+func (c *Command) Run() error {
 	if c.Identifier == "" {
 		return errors.New("pkgbuild: identifier is required")
 	}
@@ -31,7 +35,13 @@ func (c Command) Run() error {
 		return errors.New("pkgbuild: output path is required")
 	}
 
-	cmd := exec.Command("pkgbuild")
+	var cmd *exec.Cmd
+	if c.executable == "" {
+		cmd = exec.Command("pkgbuild")
+	} else {
+		cmd = exec.Command(c.executable, c.args...)
+	}
+
 	cmd.Args = append(cmd.Args, "--identifier", c.Identifier)
 	cmd.Args = append(cmd.Args, "--version", c.Version)
 	cmd.Args = append(cmd.Args, "--component", c.Component)
@@ -40,9 +50,26 @@ func (c Command) Run() error {
 
 	fmt.Printf("%v\n", cmd)
 
-	// if err := cmd.Wait(); err != nil {
-	// 	return fmt.Errorf("pkgbuild: %v", err)
-	// }
+	outBytes, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("pkgbuild: %v", err)
+	}
+
+	c.cmdOutput = new(string)
+	*c.cmdOutput = string(outBytes)
 
 	return nil
+}
+
+func (c *Command) SetExecutable(cmd string, args []string) {
+	c.executable = cmd
+	c.args = args
+}
+
+func (c Command) GetCombinedOutput() (string, error) {
+	if c.cmdOutput == nil {
+		return "", errors.New("pkgbuild: output is not set, run command first")
+	}
+
+	return *c.cmdOutput, nil
 }
