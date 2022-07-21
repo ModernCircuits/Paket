@@ -2,41 +2,10 @@ package paket
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/moderncircuits/paket/macos/productbuild"
 )
-
-func runMacOS(project Project) error {
-	script, err := createMacInstaller(project)
-	if err != nil {
-		return err
-	}
-
-	w, err := os.Create("test.xml")
-	if err != nil {
-		return err
-	}
-	defer w.Close()
-
-	if err := script.WriteFile(w); err != nil {
-		return err
-	}
-
-	cmd := productbuild.Command{
-		Distribution: *script,
-		ResourcePath: ".",
-		PackagePath:  ".",
-		OutputFile:   project.Name + ".pkg",
-	}
-
-	if err = cmd.Run(); err != nil {
-		return err
-	}
-
-	return nil
-}
 
 func createMacInstaller(project Project) (*productbuild.InstallerGuiScript, error) {
 	script := productbuild.NewInstallerGuiScript(project.Name)

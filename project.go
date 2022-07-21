@@ -17,6 +17,8 @@ type Project struct {
 	License    string            `hcl:"license,optional" json:"license,omitempty"`
 	WorkDir    string            `hcl:"work_dir,optional" json:"work_dir,omitempty"`
 	Installer  []InstallerConfig `hcl:"installer,block" json:"installers,omitempty"`
+
+	generators []Generator
 }
 
 func NewProject(path string) (*Project, error) {
@@ -47,32 +49,32 @@ func ReadProjectFile(path string, ctx *hcl.EvalContext) (*Project, error) {
 	return &project, nil
 }
 
-func (p Project) Run(platform string) error {
-	handlers := map[string]func(Project) error{
-		"aix":       runNotImplemented,
-		"android":   runNotImplemented,
-		"darwin":    runMacOS,
-		"dragonfly": runNotImplemented,
-		"freebsd":   runNotImplemented,
-		"illumos":   runNotImplemented,
-		"ios":       runNotImplemented,
-		"js":        runNotImplemented,
-		"linux":     runNotImplemented,
-		"netbsd":    runNotImplemented,
-		"openbsd":   runNotImplemented,
-		"plan9":     runNotImplemented,
-		"solaris":   runNotImplemented,
-		"windows":   runWindowsInnoSetup,
+func (p Project) RunTag(tag string) error {
+	generator := getGeneratorForTag(p.generators, tag)
+	if generator == nil {
+		return fmt.Errorf("no generator for tag %s", tag)
 	}
 
-	handler, ok := handlers[platform]
-	if !ok {
-		return runNotImplemented(p)
-	}
-
-	return handler(p)
+	return generator.Configure(p, p.Installer[0])
 }
 
-func runNotImplemented(project Project) error {
-	return fmt.Errorf("not implemented for this platform")
+func (p *Project) RegisterGenerator(g Generator) error {
+	if hasGeneratorForTag(p.generators, g.Tag()) {
+		return fmt.Errorf("generator for tag %s already registered", g.Tag())
+	}
+	p.generators = append(p.generators, g)
+	return nil
+}
+
+func getGeneratorForTag(generators []Generator, tag string) Generator {
+	for _, g := range generators {
+		if g.Tag() == tag {
+			return g
+		}
+	}
+	return nil
+}
+
+func hasGeneratorForTag(generators []Generator, tag string) bool {
+	return getGeneratorForTag(generators, tag) != nil
 }

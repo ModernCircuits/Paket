@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
-	"runtime"
 
 	"github.com/moderncircuits/paket"
 	"github.com/spf13/cobra"
@@ -22,7 +21,7 @@ func runRootCommand(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	err = project.Run(runtime.GOOS)
+	err = project.RunTag("macOS")
 	if err != nil {
 		return err
 	}

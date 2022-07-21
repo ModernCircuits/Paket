@@ -39,9 +39,21 @@ func TestNewProject(t *testing.T) {
 	{
 		project, err := paket.NewProject("testdata/minimal.hcl")
 		assert.NoError(t, err)
-		err = project.Run("ios") // unimplemented
+		err = project.RunTag("null") // unimplemented
 		assert.Error(t, err)
-		err = project.Run("fooOS") // unknown
-		assert.Error(t, err)
+
+		err = project.RegisterGenerator(paket.NullGenerator{})
+		assert.NoError(t, err)
+
+		err = project.RunTag("null") // unimplemented
+		assert.NoError(t, err)
 	}
+}
+
+func TestRegisterGenerator(t *testing.T) {
+	project := paket.Project{}
+	err := project.RegisterGenerator(paket.NullGenerator{})
+	assert.NoError(t, err)
+	err = project.RegisterGenerator(paket.NullGenerator{})
+	assert.Error(t, err)
 }

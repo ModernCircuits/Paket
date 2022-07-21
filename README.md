@@ -19,3 +19,13 @@ Cross-platform installer generator. Primarily targets Windows `InnoSetup` & macO
 - [github.com/open-eid/osx-installer/blob/master/distribution.xml](https://github.com/open-eid/osx-installer/blob/master/distribution.xml)
 - [github.com/nodejs/node/blob/main/tools/macos-installer/productbuild](https://github.com/nodejs/node/blob/main/tools/macos-installer/productbuild)
 - [keith.github.io/xcode-man-pages/productbuild.1.html](https://keith.github.io/xcode-man-pages/productbuild.1.html)
+
+### Snippets
+
+```go
+w, err := os.Create("test.xml")
+if err != nil {
+    return err
+}
+defer w.Close()
+```
