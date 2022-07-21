@@ -15,8 +15,9 @@ func parseSetup(lines []string) (*Setup, error) {
 	}
 
 	setup := &Setup{}
+	r := reflect.ValueOf(setup).Elem()
 	for k, v := range m {
-		if err := setSetupStructField(setup, k, v); err != nil {
+		if err := setSetupStructField(r, k, v); err != nil {
 			return nil, err
 		}
 	}
@@ -24,8 +25,7 @@ func parseSetup(lines []string) (*Setup, error) {
 	return setup, nil
 }
 
-func setSetupStructField(setup *Setup, tag string, value string) error {
-	e := reflect.ValueOf(setup).Elem()
+func setSetupStructField(e reflect.Value, tag string, value string) error {
 	set := false
 	for i := 0; i < e.NumField(); i++ {
 		varName := e.Type().Field(i).Name
