@@ -12,7 +12,7 @@ import (
 func TestGenerator(t *testing.T) {
 	null := innosetup.Generator{}
 	out := &bytes.Buffer{}
-	assert.Equal(t, "InnoSetup", null.Tag())
+	assert.Equal(t, "InnoSetup", null.Info().Tag)
 	assert.NoError(t, null.Configure(paket.Project{}, paket.InstallerConfig{}))
 	assert.NoError(t, null.Build(out))
 	assert.NoError(t, null.Run(out))

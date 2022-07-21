@@ -30,8 +30,8 @@ func (p Project) RunTag(tag string) error {
 }
 
 func (p *Project) RegisterGenerator(g Generator) error {
-	if hasGeneratorForTag(p.generators, g.Tag()) {
-		return fmt.Errorf("generator for tag %s already registered", g.Tag())
+	if hasGeneratorForTag(p.generators, g.Info().Tag) {
+		return fmt.Errorf("generator for tag %s already registered", g.Info().Tag)
 	}
 	p.generators = append(p.generators, g)
 	return nil
@@ -39,7 +39,7 @@ func (p *Project) RegisterGenerator(g Generator) error {
 
 func getGeneratorForTag(generators []Generator, tag string) Generator {
 	for _, g := range generators {
-		if g.Tag() == tag {
+		if g.Info().Tag == tag {
 			return g
 		}
 	}

@@ -17,7 +17,12 @@ type NativeGenerator struct {
 	tasks           []Task
 }
 
-func (g NativeGenerator) Tag() string { return "macOS" }
+func (g NativeGenerator) Info() paket.GeneratorInfo {
+	return paket.GeneratorInfo{
+		Tag:        "macOS",
+		RunnableOn: []string{"darwin"},
+	}
+}
 
 func (g *NativeGenerator) ConfigureInstaller(project paket.ProjectConfig, installer paket.InstallerConfig) error {
 	script, tasks, err := createMacInstaller(project, installer)
