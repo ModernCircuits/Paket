@@ -1,6 +1,7 @@
 package macos
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/moderncircuits/paket"
@@ -41,4 +42,14 @@ func Test_CreateMacInstaller(t *testing.T) {
 		assert.Len(t, script.Choices, 3)
 	}
 
+}
+
+func TestNativeGenerator(t *testing.T) {
+	null := NativeGenerator{}
+	out := &bytes.Buffer{}
+	assert.Equal(t, "macOS", null.Tag())
+	assert.NoError(t, null.Configure(paket.Project{}, paket.InstallerConfig{}))
+	assert.NoError(t, null.Build(out))
+	assert.NoError(t, null.Run(out))
+	assert.Empty(t, out.String())
 }
