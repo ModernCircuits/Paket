@@ -5,7 +5,7 @@ import (
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsimple"
-	"github.com/moderncircuits/paket/innosetup"
+	"github.com/moderncircuits/paket/windows/innosetup"
 	"github.com/zclconf/go-cty/cty"
 )
 

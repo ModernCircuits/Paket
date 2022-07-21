@@ -3,7 +3,7 @@ package paket
 import (
 	"os"
 
-	"github.com/moderncircuits/paket/innosetup"
+	"github.com/moderncircuits/paket/windows/innosetup"
 )
 
 func runWindowsInnoSetup(project Project) error {

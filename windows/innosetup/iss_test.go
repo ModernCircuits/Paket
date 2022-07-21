@@ -5,13 +5,13 @@ import (
 	"testing"
 
 	"github.com/moderncircuits/paket"
-	"github.com/moderncircuits/paket/innosetup"
+	"github.com/moderncircuits/paket/windows/innosetup"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewInnoSetupScript(t *testing.T) {
 	{
-		project, err := paket.NewProject("../testdata/full.hcl")
+		project, err := paket.NewProject("../../testdata/full.hcl")
 		assert.NoError(t, err)
 
 		iss := innosetup.NewInnoSetupScript(project.Name, project.Vendor)
