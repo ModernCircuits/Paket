@@ -79,7 +79,24 @@ func TestReadFileNoErrors(t *testing.T) {
 		t.Run(file, func(t *testing.T) {
 			setup, err := innosetup.ReadFile(file)
 			assert.NoError(t, err)
-			assert.NotEmpty(t, setup)
+			assert.NotNil(t, setup)
+		})
+	}
+}
+
+func TestParseWithErrors(t *testing.T) {
+	tests := []string{
+		"NoKey",
+		"NoSetup",
+		"NoValue",
+	}
+
+	for _, tc := range tests {
+		file := fmt.Sprintf("testdata/err/%s.iss", tc)
+		t.Run(file, func(t *testing.T) {
+			setup, err := innosetup.ReadFile(file)
+			assert.Error(t, err)
+			assert.Nil(t, setup)
 		})
 	}
 }
