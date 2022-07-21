@@ -77,14 +77,6 @@ func NewInnoSetupScript(projectName string, vendor string) InnoSetupScript {
 }
 
 func (iss InnoSetupScript) Run(w io.Writer) error {
-	if iss.Setup.AppId == "" {
-		id, err := NewInnoSetupGUID()
-		if err != nil {
-			return err
-		}
-		iss.Setup.AppId = id
-	}
-
 	return iss.WriteFile(w)
 }
 
