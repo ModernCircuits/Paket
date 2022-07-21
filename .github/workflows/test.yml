@@ -24,11 +24,11 @@ jobs:
 
       - name: Run coverage
         if: runner.os == 'Linux'
-        run: go test -coverprofile=coverage.out -covermode=atomic ./...
+        run: go test -coverprofile="coverage.out" -covermode=atomic ./...
 
       - name: Run coverage
         if: runner.os != 'Linux'
-        run: go test -coverprofile=coverage.out ./...
+        run: go test -coverprofile="coverage.out" ./...
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
