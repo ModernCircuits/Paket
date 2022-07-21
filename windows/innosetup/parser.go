@@ -9,12 +9,7 @@ import (
 )
 
 func parseSetupSection(lines []string) (*SetupSection, error) {
-	setupSectionLines, err := getSetupSectionLines(lines)
-	if err != nil {
-		return nil, err
-	}
-
-	m, err := parseLinesToMap(setupSectionLines[1:])
+	m, err := parseLinesToMap(lines)
 	if err != nil {
 		return nil, err
 	}
@@ -31,6 +26,7 @@ func parseSetupSection(lines []string) (*SetupSection, error) {
 
 func setSetupStructField(setup *SetupSection, tag string, value string) error {
 	e := reflect.ValueOf(setup).Elem()
+	set := false
 	for i := 0; i < e.NumField(); i++ {
 		varName := e.Type().Field(i).Name
 		if varName != tag {
@@ -38,6 +34,7 @@ func setSetupStructField(setup *SetupSection, tag string, value string) error {
 		}
 
 		varType := e.Type().Field(i).Type
+		set = true
 		switch varType.Kind() {
 		case reflect.String:
 			e.Field(i).SetString(value)
@@ -46,6 +43,10 @@ func setSetupStructField(setup *SetupSection, tag string, value string) error {
 		default:
 			return fmt.Errorf("unimplemented type %v", varType)
 		}
+	}
+
+	if !set {
+		return fmt.Errorf("unimplemented tag %q", tag)
 	}
 	return nil
 }
@@ -106,34 +107,27 @@ func isBlankLine(line string) bool {
 	return line == ""
 }
 
-func findSetupStartIndex(lines []string) int {
-	for i, line := range lines {
-		if strings.Contains(line, "[Setup]") {
-			return i
+func splitSectionLines(lines []string) map[string][]string {
+	sections := map[string][]string{}
+	key := ""
+	for _, line := range lines {
+		if strings.HasPrefix(line, "[") && strings.HasSuffix(line, "]") {
+			key = strings.Replace(line, "[", "", 1)
+			key = strings.Replace(key, "]", "", 1)
+			sections[key] = []string{}
+			continue
 		}
-	}
-	return -1
-}
 
-func findSetupEndIndex(lines []string, startIndex int) int {
-	for i, line := range lines {
-		if strings.Contains(line, "[Files]") {
-			return i + startIndex
-		}
+		sections[key] = append(sections[key], line)
 	}
-	return -1
+
+	return sections
 }
 
 func getSetupSectionLines(lines []string) ([]string, error) {
-	start := findSetupStartIndex(lines)
-	if start == -1 {
-		return nil, fmt.Errorf("setup section start not found")
+	sectionLines, ok := splitSectionLines(lines)["Setup"]
+	if !ok {
+		return nil, fmt.Errorf("no [Setup] section found")
 	}
-
-	end := findSetupEndIndex(lines, start)
-	if end == -1 {
-		return nil, fmt.Errorf("setup section end not found")
-	}
-
-	return lines[start:end], nil
+	return sectionLines, nil
 }

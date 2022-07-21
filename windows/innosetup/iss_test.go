@@ -42,6 +42,12 @@ func TestReadFile(t *testing.T) {
 		assert.Nil(t, iss)
 	})
 
+	t.Run("ErrNoSetupSection", func(t *testing.T) {
+		iss, err := innosetup.ReadFile("testdata/ErrNoSetupSection.iss")
+		assert.Error(t, err)
+		assert.Nil(t, iss)
+	})
+
 	t.Run("Example1", func(t *testing.T) {
 		iss, err := innosetup.ReadFile("testdata/Example1.iss")
 		assert.NoError(t, err)
@@ -56,4 +62,5 @@ func TestReadFile(t *testing.T) {
 		assert.Equal(t, "userdocs:Inno Setup Examples Output", iss.Setup.OutputDir)
 		assert.True(t, iss.Setup.SolidCompression)
 	})
+
 }

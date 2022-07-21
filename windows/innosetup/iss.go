@@ -77,10 +77,6 @@ func NewInnoSetupScript(projectName string, vendor string) InnoSetupScript {
 	}
 }
 
-func (iss InnoSetupScript) Run(w io.Writer) error {
-	return iss.WriteFile(w)
-}
-
 func (iss InnoSetupScript) WriteFile(w io.Writer) error {
 	e := reflect.ValueOf(&iss.Setup).Elem()
 	for i := 0; i < e.NumField(); i++ {
@@ -118,13 +114,18 @@ func ReadFile(path string) (*InnoSetupScript, error) {
 
 func Parse(r io.Reader) (*InnoSetupScript, error) {
 	lines := removeAllCommentLines(readAllLines(r))
-	setup, err := parseSetupSection(lines)
+
+	setupLines, err := getSetupSectionLines(lines)
 	if err != nil {
 		return nil, err
 	}
 
-	iss := &InnoSetupScript{
-		Setup: *setup,
+	setup, err := parseSetupSection(setupLines)
+	if err != nil {
+		return nil, err
 	}
-	return iss, nil
+
+	return &InnoSetupScript{
+		Setup: *setup,
+	}, nil
 }
