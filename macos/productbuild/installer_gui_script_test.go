@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/moderncircuits/paket/productbuild"
+	"github.com/moderncircuits/paket/macos/productbuild"
 	"github.com/stretchr/testify/assert"
 )
 

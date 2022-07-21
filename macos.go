@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/moderncircuits/paket/productbuild"
+	"github.com/moderncircuits/paket/macos/productbuild"
 )
 
 func runMacOS(project Project) error {

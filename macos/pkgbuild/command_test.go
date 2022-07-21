@@ -5,7 +5,7 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/moderncircuits/paket/pkgbuild"
+	"github.com/moderncircuits/paket/macos/pkgbuild"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -51,7 +51,7 @@ func TestCommandRunEchoArgs(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(fmt.Sprintf("id: %s", tc.Identifier), func(t *testing.T) {
-			tc.SetExecutable(pythonExe(), []string{"../testdata/bin/echo.py"})
+			tc.SetExecutable(pythonExe(), []string{"../../testdata/bin/echo.py"})
 
 			out, err := tc.GetCombinedOutput()
 			assert.Error(t, err)
