@@ -1,20 +1,30 @@
-package paket
+package macos
 
 import (
 	"fmt"
+	"io"
 	"strings"
 
+	"github.com/moderncircuits/paket"
 	"github.com/moderncircuits/paket/macos/productbuild"
 )
 
-func createMacInstaller(project Project) (*productbuild.InstallerGuiScript, error) {
+type NativeGenerator struct {
+}
+
+func (ng NativeGenerator) Tag() string                                          { return "macOS" }
+func (ng NativeGenerator) Configure(paket.Project, paket.InstallerConfig) error { return nil }
+func (ng NativeGenerator) Build(io.Writer) error                                { return nil }
+func (ng NativeGenerator) Run(io.Writer) error                                  { return nil }
+
+func createMacInstaller(project paket.Project) (*productbuild.InstallerGuiScript, error) {
 	script := productbuild.NewInstallerGuiScript(project.Name)
 
 	if project.License != "" {
 		script.License = &productbuild.License{File: project.License}
 	}
 
-	var macOS *InstallerConfig
+	var macOS *paket.InstallerConfig
 	for _, installer := range project.Installer {
 		if installer.OS == "macOS" {
 			macOS = &installer

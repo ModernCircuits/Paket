@@ -1,17 +1,18 @@
-package paket
+package macos
 
 import (
 	"testing"
 
+	"github.com/moderncircuits/paket"
 	"github.com/stretchr/testify/assert"
 )
 
 func Test_CreateMacInstaller(t *testing.T) {
 
 	{
-		path := "testdata/minimal.hcl"
+		path := "../testdata/minimal.hcl"
 
-		project, err := NewProject(path)
+		project, err := paket.NewProject(path)
 		assert.NoError(t, err)
 
 		script, err := createMacInstaller(*project)
@@ -25,9 +26,9 @@ func Test_CreateMacInstaller(t *testing.T) {
 	}
 
 	{
-		path := "testdata/full.hcl"
+		path := "../testdata/full.hcl"
 
-		project, err := NewProject(path)
+		project, err := paket.NewProject(path)
 		assert.NoError(t, err)
 
 		script, err := createMacInstaller(*project)
