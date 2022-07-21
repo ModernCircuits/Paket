@@ -30,11 +30,11 @@ installer "Windows" {
 
   component "VST3" {
     payload     = "Windows/VST3/Plugin Template.vst3"
-    destination = "${windows.commoncf64}/VST3"
+    destination = "{commoncf64}/VST3"
   }
 
   component "CLAP" {
     payload     = "Windows/CLAP/Plugin Template.clap"
-    destination = "${windows.commoncf64}/CLAP"
+    destination = "{commoncf64}/CLAP"
   }
 }

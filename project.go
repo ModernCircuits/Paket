@@ -5,8 +5,6 @@ import (
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/hclsimple"
-	"github.com/moderncircuits/paket/windows/innosetup"
-	"github.com/zclconf/go-cty/cty"
 )
 
 type Project struct {
@@ -22,23 +20,7 @@ type Project struct {
 }
 
 func NewProject(path string) (*Project, error) {
-	windowsConstants := innosetup.DirectoryConstants()
-	windowsVars := map[string]cty.Value{}
-	for _, constant := range windowsConstants {
-		windowsVars[constant] = cty.StringVal(fmt.Sprintf("{%s}", constant))
-	}
-	ctx := &hcl.EvalContext{
-		Variables: map[string]cty.Value{
-			"windows": cty.ObjectVal(windowsVars),
-		},
-	}
-
-	project, err := ReadProjectFile(path, ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return project, nil
+	return ReadProjectFile(path, nil)
 }
 
 func ReadProjectFile(path string, ctx *hcl.EvalContext) (*Project, error) {
