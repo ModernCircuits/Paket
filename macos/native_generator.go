@@ -6,22 +6,27 @@ import (
 	"strings"
 
 	"github.com/moderncircuits/paket"
+	"github.com/moderncircuits/paket/macos/pkgbuild"
 	"github.com/moderncircuits/paket/macos/productbuild"
 )
 
+type Task func() error
+
 type NativeGenerator struct {
 	installerScript productbuild.InstallerGuiScript
+	tasks           []Task
 }
 
 func (g NativeGenerator) Tag() string { return "macOS" }
 
 func (g *NativeGenerator) Configure(project paket.Project, installer paket.InstallerConfig) error {
-	script, err := createMacInstaller(project, installer)
+	script, tasks, err := createMacInstaller(project, installer)
 	if err != nil {
 		return err
 	}
 
 	g.installerScript = *script
+	g.tasks = tasks
 	return nil
 }
 
@@ -29,8 +34,9 @@ func (g NativeGenerator) Build(io.Writer) error { return nil }
 
 func (g NativeGenerator) Run(io.Writer) error { return nil }
 
-func createMacInstaller(project paket.Project, installer paket.InstallerConfig) (*productbuild.InstallerGuiScript, error) {
+func createMacInstaller(project paket.Project, installer paket.InstallerConfig) (*productbuild.InstallerGuiScript, []Task, error) {
 	script := productbuild.NewInstallerGuiScript(project.Name)
+	tasks := []Task{}
 
 	if project.License != "" {
 		script.License = &productbuild.License{File: project.License}
@@ -47,22 +53,26 @@ func createMacInstaller(project paket.Project, installer paket.InstallerConfig) 
 	for _, component := range installer.Components {
 		id := fmt.Sprintf("%s.%s", project.Identifier, strings.ToLower(component.Tag))
 
-		// version := project.Version
-		// if component.Version != "" {
-		// 	version = component.Version
-		// }
+		version := project.Version
+		if component.Version != "" {
+			version = component.Version
+		}
 
-		// pkgBuild := pkgbuild.Command{
-		// 	Identifier:      id,
-		// 	Version:         version,
-		// 	Component:       component.Payload,
-		// 	InstallLocation: component.Destination,
-		// 	Output:          fmt.Sprintf("%s.pkg", component.Tag),
-		// }
-		// err := pkgBuild.Run()
-		// if err != nil {
-		// 	return nil, err
-		// }
+		tasks = append(tasks, func() error {
+			pkgBuild := pkgbuild.Command{
+				Identifier:      id,
+				Version:         version,
+				Component:       component.Payload,
+				InstallLocation: component.Destination,
+				Output:          fmt.Sprintf("%s.pkg", component.Tag),
+			}
+			err := pkgBuild.Run()
+			if err != nil {
+				return err
+			}
+
+			return nil
+		})
 
 		line := productbuild.Line{Choice: id}
 		script.ChoicesOutline.Lines = append(script.ChoicesOutline.Lines, line)
@@ -79,5 +89,5 @@ func createMacInstaller(project paket.Project, installer paket.InstallerConfig) 
 
 	}
 
-	return &script, nil
+	return &script, tasks, nil
 }
