@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/hashicorp/hcl/v2"
 	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/hashicorp/hcl/v2/hclparse"
+	"github.com/zclconf/go-cty/cty"
 )
 
 type Project struct {
@@ -30,27 +32,27 @@ func ReadProjectFile(path string) (*Project, error) {
 		return nil, fmt.Errorf("in ReadProjectFile failed to parse configuration: %s", parseDiag.Error())
 	}
 
+	ctx := createParseContext()
+
 	var project Project
-	decodeDiag := gohcl.DecodeBody(hclFile.Body, nil, &project)
+	decodeDiag := gohcl.DecodeBody(hclFile.Body, ctx, &project)
 	if decodeDiag.HasErrors() {
 		return nil, fmt.Errorf("in ReadProjectFile failed to decode configuration: %s", decodeDiag.Error())
 	}
 	return &project, nil
 }
 
-type Installer struct {
-	Name       string     `hcl:"name,label" json:"name"`
-	Generator  string     `hcl:"generator,label" json:"generator"`
-	UUID       string     `hcl:"uuid,optional" json:"uuid,omitempty"`
-	Welcome    string     `hcl:"welcome,optional" json:"welcome,omitempty"`
-	Conclusion string     `hcl:"conclusion,optional" json:"conclusion,omitempty"`
-	Artifacts  []Artifact `hcl:"artifact,block" json:"artifacts"`
-}
-
-type Artifact struct {
-	Tag         string `hcl:"tag,label" json:"tag"`
-	Name        string `hcl:"name,optional" json:"name,omitempty"`
-	Version     string `hcl:"version,optional" json:"version,omitempty"`
-	Payload     string `hcl:"payload" json:"payload"`
-	Destination string `hcl:"destination" json:"destination"`
+func createParseContext() *hcl.EvalContext {
+	projectName := ""
+	if str := os.Getenv("PAKET_VERSION"); str != "" {
+		projectName = str
+	}
+	variables := map[string]cty.Value{
+		"env": cty.ObjectVal(map[string]cty.Value{
+			"project": cty.StringVal(projectName),
+		}),
+	}
+	return &hcl.EvalContext{
+		Variables: variables,
+	}
 }
