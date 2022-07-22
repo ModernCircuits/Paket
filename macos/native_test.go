@@ -12,7 +12,7 @@ func TestNative(t *testing.T) {
 	native := Native{}
 	out := &bytes.Buffer{}
 	assert.Implements(t, (*paket.Generator)(nil), &native)
-	assert.Equal(t, "macOS", native.Info().Tag)
+	assert.Equal(t, "macos-pkg", native.Info().Tag)
 
 	assert.Error(t, native.Configure(paket.Project{}, paket.Installer{}))
 	assert.NoError(t, native.Build(out))
@@ -32,7 +32,7 @@ func Test_NativeConfigure(t *testing.T) {
 		native := Native{}
 		err := native.Configure(config, paket.Installer{})
 		assert.Error(t, err)
-		assert.Contains(t, err.Error(), `does not match generator tag "macOS"`)
+		assert.Contains(t, err.Error(), `does not match generator tag "macos-pkg"`)
 	}
 
 	{
@@ -75,11 +75,11 @@ func TestNativeExport(t *testing.T) {
 		out := &bytes.Buffer{}
 		err := native.Export(paket.Project{Installers: []paket.Installer{}}, out)
 		assert.Error(t, err)
-		assert.Contains(t, err.Error(), "macOS installer config not found")
+		assert.Contains(t, err.Error(), "macos-pkg installer config not found")
 	}
 
 	{
-		project := paket.Project{Name: "Foo Bar", Installers: []paket.Installer{{OS: "macOS"}}}
+		project := paket.Project{Name: "Foo Bar", Installers: []paket.Installer{{Generator: "macos-pkg"}}}
 		native := Native{}
 		out := &bytes.Buffer{}
 		err := native.Export(project, out)

@@ -18,17 +18,17 @@ version    = "0.1.0"
 license    = "LICENSE.txt"
 identifier = "com.modern-circuits.example-app"
 
-installer "macOS" {
+installer "macOS" "macos-pkg" {
   artifact "App" {
     payload     = "macOS/Example App.app"
     destination = "/Application"
   }
 }
 
-installer "InnoSetup" {
+installer "Windows" "innosetup" {
   artifact "App" {
     payload     = "Windows/Example App.exe"
-    destination = "{commoncf64}/commonpf64/Modern Circuits"
+    destination = "{commonpf64}/Modern Circuits"
   }
 }
 ```
@@ -42,7 +42,7 @@ version    = "0.1.0"
 license    = "LICENSE.txt"
 identifier = "com.modern-circuits.example-effect"
 
-installer "macOS" {
+installer "macOS" "macos-pkg" {
   artifact "AU" {
     name        = "Audio Unit"
     version     = "0.1.1"
@@ -61,7 +61,7 @@ installer "macOS" {
   }
 }
 
-installer "InnoSetup" {
+installer "Windows" "innosetup" {
   artifact "VST3" {
     payload     = "Windows/VST3/Example Effect.vst3"
     destination = "{commoncf64}/VST3"

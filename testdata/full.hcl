@@ -4,7 +4,7 @@ version    = "0.1.0"
 license    = "LICENSE.txt"
 identifier = "com.modern-circuits.plugin-template"
 
-installer "macOS" {
+installer "macOS" "macos-pkg" {
   welcome    = "LICENSE.txt"
   conclusion = "LICENSE.txt"
 
@@ -26,7 +26,7 @@ installer "macOS" {
   }
 }
 
-installer "InnoSetup" {
+installer "Windows" "innosetup" {
   uuid = "ASDFGH-JMKJH-GFDSDFGHJKL"
 
   artifact "VST3" {

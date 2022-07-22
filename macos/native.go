@@ -11,16 +11,14 @@ import (
 	"github.com/moderncircuits/paket/macos/productbuild"
 )
 
-type Task func() error
-
 type Native struct {
 	installerScript productbuild.InstallerGuiScript
-	tasks           []Task
+	tasks           []func() error
 }
 
 func (n *Native) Info() paket.GeneratorInfo {
 	return paket.GeneratorInfo{
-		Tag:        "macOS",
+		Tag:        "macos-pkg",
 		RunnableOn: []string{"darwin"},
 	}
 }
@@ -47,14 +45,14 @@ func (n *Native) Import(io.Reader) (*paket.Project, error) {
 func (n *Native) Export(project paket.Project, w io.Writer) error {
 	var installerConfig *paket.Installer
 	for _, config := range project.Installers {
-		if config.OS == n.Info().Tag {
+		if config.Generator == n.Info().Tag {
 			installerConfig = &config
 			break
 		}
 	}
 
 	if installerConfig == nil {
-		return errors.New("macOS installer config not found")
+		return errors.New("macos-pkg installer config not found")
 	}
 
 	script, _, err := n.createMacInstaller(project, *installerConfig)
@@ -65,12 +63,12 @@ func (n *Native) Export(project paket.Project, w io.Writer) error {
 	return script.WriteFile(w)
 }
 
-func (n *Native) createMacInstaller(project paket.Project, installer paket.Installer) (*productbuild.InstallerGuiScript, []Task, error) {
-	if installer.OS != n.Info().Tag {
-		return nil, nil, fmt.Errorf("tag %q does not match generator tag %q", installer.OS, n.Info().Tag)
+func (n *Native) createMacInstaller(project paket.Project, installer paket.Installer) (*productbuild.InstallerGuiScript, []func() error, error) {
+	if g := installer.Generator; g != n.Info().Tag {
+		return nil, nil, fmt.Errorf("tag %q does not match generator tag %q", g, n.Info().Tag)
 	}
 	script := productbuild.NewInstallerGuiScript(project.Name)
-	tasks := []Task{}
+	tasks := []func() error{}
 
 	if project.License != "" {
 		script.License = productbuild.License{File: project.License}

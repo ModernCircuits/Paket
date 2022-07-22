@@ -13,7 +13,7 @@ type Compiler struct {
 
 func (c *Compiler) Info() paket.GeneratorInfo {
 	return paket.GeneratorInfo{
-		Tag:        "InnoSetup",
+		Tag:        "innosetup",
 		RunnableOn: []string{"windows"},
 	}
 }
@@ -28,7 +28,7 @@ func (c *Compiler) Import(io.Reader) (*paket.Project, error) {
 func (c *Compiler) Export(project paket.Project, w io.Writer) error {
 	var installerConfig *paket.Installer
 	for _, config := range project.Installers {
-		if config.OS == c.Info().Tag {
+		if config.Generator == c.Info().Tag {
 			installerConfig = &config
 			break
 		}

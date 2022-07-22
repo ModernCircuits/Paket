@@ -13,7 +13,7 @@ func TestCompiler(t *testing.T) {
 	inno := innosetup.Compiler{}
 	out := &bytes.Buffer{}
 	assert.Implements(t, (*paket.Generator)(nil), &inno)
-	assert.Equal(t, "InnoSetup", inno.Info().Tag)
+	assert.Equal(t, "innosetup", inno.Info().Tag)
 
 	assert.NoError(t, inno.Configure(paket.Project{}, paket.Installer{}))
 	assert.NoError(t, inno.Build(out))
@@ -36,7 +36,7 @@ func TestCompilerExport(t *testing.T) {
 	}
 
 	{
-		project := paket.Project{Name: "Foo Bar", Installers: []paket.Installer{{OS: "InnoSetup"}}}
+		project := paket.Project{Name: "Foo Bar", Installers: []paket.Installer{{Generator: "innosetup"}}}
 		inno := innosetup.Compiler{}
 		out := &bytes.Buffer{}
 		err := inno.Export(project, out)
