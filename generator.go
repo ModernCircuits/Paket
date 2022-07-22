@@ -19,7 +19,7 @@ type Generator interface {
 	// Info describes the generator.
 	Info() GeneratorInfo
 
-	// Converts the hcl installer block configuration into a more specfic form
+	// Converts the hcl installer block configuration into a more specific form
 	// understood by this generator.
 	Configure(Project, hcl.EvalContext, hcl.Body) error
 
