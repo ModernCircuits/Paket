@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: BSL-1.0
+
 package runtime
 
 // Version is the sematic version of the binary
