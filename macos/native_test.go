@@ -8,6 +8,23 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestNative(t *testing.T) {
+	native := Native{}
+	out := &bytes.Buffer{}
+	assert.Implements(t, (*paket.Generator)(nil), &native)
+	assert.Equal(t, "macOS", native.Info().Tag)
+
+	assert.Error(t, native.Configure(paket.ProjectConfig{}, paket.InstallerConfig{}))
+	assert.NoError(t, native.Build(out))
+	assert.NoError(t, native.Run(out))
+	assert.Empty(t, out.String())
+
+	_, err := native.Import(out)
+	assert.Error(t, err)
+	assert.Error(t, native.Export(paket.ProjectConfig{}, nil))
+	assert.Empty(t, out.String())
+}
+
 func Test_NativeConfigure(t *testing.T) {
 
 	{
@@ -52,13 +69,22 @@ func Test_NativeConfigure(t *testing.T) {
 
 }
 
-func TestNative(t *testing.T) {
-	native := Native{}
-	out := &bytes.Buffer{}
-	assert.Implements(t, (*paket.Generator)(nil), &native)
-	assert.Equal(t, "macOS", native.Info().Tag)
-	assert.Error(t, native.Configure(paket.ProjectConfig{}, paket.InstallerConfig{}))
-	assert.NoError(t, native.Build(out))
-	assert.NoError(t, native.Run(out))
-	assert.Empty(t, out.String())
+func TestNativeExport(t *testing.T) {
+	{
+		inno := Native{}
+		out := &bytes.Buffer{}
+		err := inno.Export(paket.ProjectConfig{Installers: []paket.InstallerConfig{}}, out)
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "macOS installer config not found")
+	}
+
+	{
+		project := paket.ProjectConfig{Name: "Foo Bar", Installers: []paket.InstallerConfig{{OS: "macOS"}}}
+		inno := Native{}
+		out := &bytes.Buffer{}
+		err := inno.Export(project, out)
+		assert.NoError(t, err)
+		assert.Contains(t, out.String(), `installer-gui-script authoringTool="Paket" authoringToolVersion="0.1.0"`)
+		assert.Contains(t, out.String(), `Foo Bar`)
+	}
 }

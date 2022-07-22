@@ -1,6 +1,7 @@
 package macos
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"strings"
@@ -43,8 +44,25 @@ func (n *Native) Import(io.Reader) (*paket.ProjectConfig, error) {
 	return nil, fmt.Errorf("unimplemented import for tag: %s", n.Info().Tag)
 }
 
-func (n *Native) Export(paket.ProjectConfig, io.Writer) error {
-	return fmt.Errorf("unimplemented export for tag: %s", n.Info().Tag)
+func (n *Native) Export(project paket.ProjectConfig, w io.Writer) error {
+	var installerConfig *paket.InstallerConfig
+	for _, config := range project.Installers {
+		if config.OS == n.Info().Tag {
+			installerConfig = &config
+			break
+		}
+	}
+
+	if installerConfig == nil {
+		return errors.New("macOS installer config not found")
+	}
+
+	script, _, err := n.createMacInstaller(project, *installerConfig)
+	if err != nil {
+		return err
+	}
+
+	return script.WriteFile(w)
 }
 
 func (n *Native) createMacInstaller(project paket.ProjectConfig, installer paket.InstallerConfig) (*productbuild.InstallerGuiScript, []Task, error) {
