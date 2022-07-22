@@ -1,5 +1,5 @@
 .PHONY: all
-all: deps build
+all: deps build test
 
 # BINARY
 BINARY_DIR=bin
@@ -28,8 +28,18 @@ test:
 .PHONY: coverage
 coverage:
 	go test -coverprofile=coverage.out ./...
-	# go tool cover -func=coverage.out
+
+.PHONY: coverage-cli
+coverage-cli:
+	go tool cover -func=coverage.out
+
+.PHONY: coverage-html
+coverage-html:
 	go tool cover -html=coverage.out
+
+.PHONY: check
+check:
+	pre-commit run --all-files
 
 .PHONY: clean
 clean:
@@ -40,4 +50,4 @@ clean:
 
 .PHONY: stats
 stats:
-	cloc --by-file --vcs=git .
+	cloc --vcs=git .
