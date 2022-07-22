@@ -23,6 +23,10 @@ func (n *Native) Info() paket.GeneratorInfo {
 	}
 }
 
+func (n *Native) Parse(paket.Project, paket.InstallerHCL) error {
+	return fmt.Errorf("unimplemented parse for generator: %s", n.Info().Tag)
+}
+
 func (n *Native) Configure(project paket.Project, installer paket.Installer) error {
 	script, tasks, err := n.createMacInstaller(project, installer)
 	if err != nil {

@@ -11,3 +11,4 @@ func (ng NullGenerator) Build(io.Writer) error              { return nil }
 func (ng NullGenerator) Run(io.Writer) error                { return nil }
 func (ng NullGenerator) Import(io.Reader) (*Project, error) { return nil, nil }
 func (ng NullGenerator) Export(Project, io.Writer) error    { return nil }
+func (ng NullGenerator) Parse(Project, InstallerHCL) error  { return nil }

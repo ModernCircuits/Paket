@@ -17,12 +17,16 @@ func (c *Compiler) Info() paket.GeneratorInfo {
 		RunnableOn: []string{"windows"},
 	}
 }
+
+func (c *Compiler) Parse(paket.Project, paket.InstallerHCL) error {
+	return fmt.Errorf("unimplemented parse for generator: %s", c.Info().Tag)
+}
 func (c *Compiler) Configure(paket.Project, paket.Installer) error { return nil }
 func (c *Compiler) Build(io.Writer) error                          { return nil }
 func (c *Compiler) Run(io.Writer) error                            { return nil }
 
 func (c *Compiler) Import(io.Reader) (*paket.Project, error) {
-	return nil, fmt.Errorf("unimplemented import for tag: %s", c.Info().Tag)
+	return nil, fmt.Errorf("unimplemented import for generator: %s", c.Info().Tag)
 }
 
 func (c *Compiler) Export(project paket.Project, w io.Writer) error {

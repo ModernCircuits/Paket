@@ -1,6 +1,8 @@
 package paket
 
-import "io"
+import (
+	"io"
+)
 
 type GeneratorInfo struct {
 	Tag        string
@@ -12,6 +14,8 @@ type GeneratorInfo struct {
 type Generator interface {
 	// Info describes the generator.
 	Info() GeneratorInfo
+
+	Parse(Project, InstallerHCL) error
 
 	// Import a platform specific configuration from a reader. The reader will
 	// probably come from a configuration file like an InnoSetup *.iss file or
