@@ -15,6 +15,9 @@ Cross-platform meta installer generator. Primarily targets Windows
  Quick Start
 *************
 
+Application
+===========
+
 .. code:: hcl
 
    name       = "Example App"
@@ -34,6 +37,48 @@ Cross-platform meta installer generator. Primarily targets Windows
       artifact "App" {
          payload     = "Windows/${project.name}.exe"
          destination = "{commonpf64}/${project.vendor}"
+      }
+   }
+
+Audio Plugin
+============
+
+.. code:: hcl
+
+   name       = "Example Effect"
+   vendor     = "Modern Circuits"
+   version    = "0.1.0"
+   license    = "LICENSE.txt"
+   identifier = "com.modern-circuits.example-effect"
+
+   installer "macOS" "macos-pkg" {
+      artifact "AU" {
+         name        = "Audio Unit"
+         version     = "0.1.1"
+         payload     = "macOS/AU/${project.name}.component"
+         destination = "/Library/Audio/Plug-Ins/AU"
+      }
+
+      artifact "VST3" {
+         payload     = "macOS/VST3/${project.name}.vst3"
+         destination = "/Library/Audio/Plug-Ins/VST3"
+      }
+
+      artifact "CLAP" {
+         payload     = "macOS/CLAP/${project.name}.clap"
+         destination = "/Library/Audio/Plug-Ins/CLAP"
+      }
+   }
+
+   installer "Windows" "innosetup" {
+      artifact "VST3" {
+         payload     = "Windows/VST3/${project.name}.vst3"
+         destination = "{commoncf64}/VST3"
+      }
+
+      artifact "CLAP" {
+         payload     = "Windows/CLAP/${project.name}.clap"
+         destination = "{commoncf64}/CLAP"
       }
    }
 
