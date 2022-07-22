@@ -18,6 +18,11 @@ jobs:
         with:
           go-version: 1.18.x
 
+      - name: Lint golangci
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: latest
+
       - name: Run race detector tests
         if: runner.os != 'Windows'
         run: go test -race ./...
