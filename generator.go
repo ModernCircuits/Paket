@@ -17,15 +17,15 @@ type Generator interface {
 	// probably come from a configuration file like an InnoSetup *.iss file or
 	// a pkgbuild/productbuild *.xml distribution file. Roundtrip import/export
 	// is most likely lossy.
-	Import(io.Reader) (*ProjectConfig, error)
+	Import(io.Reader) (*Project, error)
 
 	// Export a platform specific configuration to a writer. Roundtrip
 	// import/export is most likely lossy.
-	Export(ProjectConfig, io.Writer) error
+	Export(Project, io.Writer) error
 
 	// Coverts the global project configuration into a more specfic form
 	// understood by this generator.
-	Configure(ProjectConfig, InstallerConfig) error
+	Configure(Project, Installer) error
 
 	// Creates the build  environment including folders and configuration files
 	// needed by the generator.

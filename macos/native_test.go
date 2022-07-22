@@ -14,29 +14,29 @@ func TestNative(t *testing.T) {
 	assert.Implements(t, (*paket.Generator)(nil), &native)
 	assert.Equal(t, "macOS", native.Info().Tag)
 
-	assert.Error(t, native.Configure(paket.ProjectConfig{}, paket.InstallerConfig{}))
+	assert.Error(t, native.Configure(paket.Project{}, paket.Installer{}))
 	assert.NoError(t, native.Build(out))
 	assert.NoError(t, native.Run(out))
 	assert.Empty(t, out.String())
 
 	_, err := native.Import(out)
 	assert.Error(t, err)
-	assert.Error(t, native.Export(paket.ProjectConfig{}, nil))
+	assert.Error(t, native.Export(paket.Project{}, nil))
 	assert.Empty(t, out.String())
 }
 
 func Test_NativeConfigure(t *testing.T) {
 
 	{
-		config := paket.ProjectConfig{}
+		config := paket.Project{}
 		native := Native{}
-		err := native.Configure(config, paket.InstallerConfig{})
+		err := native.Configure(config, paket.Installer{})
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), `does not match generator tag "macOS"`)
 	}
 
 	{
-		config, err := paket.ReadProjectConfigFile("../testdata/minimal.hcl")
+		config, err := paket.ReadProjectFile("../testdata/minimal.hcl")
 		assert.NoError(t, err)
 
 		native := Native{}
@@ -52,7 +52,7 @@ func Test_NativeConfigure(t *testing.T) {
 	}
 
 	{
-		config, err := paket.ReadProjectConfigFile("../testdata/full.hcl")
+		config, err := paket.ReadProjectFile("../testdata/full.hcl")
 		assert.NoError(t, err)
 
 		native := Native{}
@@ -73,13 +73,13 @@ func TestNativeExport(t *testing.T) {
 	{
 		native := Native{}
 		out := &bytes.Buffer{}
-		err := native.Export(paket.ProjectConfig{Installers: []paket.InstallerConfig{}}, out)
+		err := native.Export(paket.Project{Installers: []paket.Installer{}}, out)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "macOS installer config not found")
 	}
 
 	{
-		project := paket.ProjectConfig{Name: "Foo Bar", Installers: []paket.InstallerConfig{{OS: "macOS"}}}
+		project := paket.Project{Name: "Foo Bar", Installers: []paket.Installer{{OS: "macOS"}}}
 		native := Native{}
 		out := &bytes.Buffer{}
 		err := native.Export(project, out)

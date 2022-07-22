@@ -13,7 +13,7 @@ type ISS struct {
 	Setup Setup `json:"setup"`
 }
 
-func NewISS(project paket.ProjectConfig) ISS {
+func NewISS(project paket.Project) ISS {
 	return ISS{
 		Setup: Setup{
 			AppName:      project.Name,

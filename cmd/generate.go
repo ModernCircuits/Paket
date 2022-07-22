@@ -32,7 +32,7 @@ func runGenerateCommand(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	config, err := paket.ReadProjectConfigFile("testdata/full.hcl")
+	config, err := paket.ReadProjectFile("testdata/full.hcl")
 	if err != nil {
 		return err
 	}

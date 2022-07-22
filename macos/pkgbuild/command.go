@@ -26,7 +26,7 @@ func (c *Command) Run() error {
 		return errors.New("pkgbuild: version is required")
 	}
 	if c.Component == "" {
-		return errors.New("pkgbuild: component is required")
+		return errors.New("pkgbuild: artifact is required")
 	}
 	if c.InstallLocation == "" {
 		return errors.New("pkgbuild: install-location is required")

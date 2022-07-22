@@ -8,19 +8,19 @@ installer "macOS" {
   welcome    = "LICENSE.txt"
   conclusion = "LICENSE.txt"
 
-  component "AU" {
+  artifact "AU" {
     name        = "Audio Unit"
     version     = "0.1.1"
-    payload     = "macOS/AU/Plugin Template.component"
+    payload     = "macOS/AU/Plugin Template.artifact"
     destination = "/Library/Audio/Plug-Ins/AU"
   }
 
-  component "VST3" {
+  artifact "VST3" {
     payload     = "macOS/VST3/Plugin Template.vst3"
     destination = "/Library/Audio/Plug-Ins/VST3"
   }
 
-  component "CLAP" {
+  artifact "CLAP" {
     payload     = "macOS/CLAP/Plugin Template.clap"
     destination = "/Library/Audio/Plug-Ins/CLAP"
   }
@@ -29,12 +29,12 @@ installer "macOS" {
 installer "InnoSetup" {
   uuid = "ASDFGH-JMKJH-GFDSDFGHJKL"
 
-  component "VST3" {
+  artifact "VST3" {
     payload     = "Windows/VST3/Plugin Template.vst3"
     destination = "{commoncf64}/VST3"
   }
 
-  component "CLAP" {
+  artifact "CLAP" {
     payload     = "Windows/CLAP/Plugin Template.clap"
     destination = "{commoncf64}/CLAP"
   }

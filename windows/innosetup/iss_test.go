@@ -11,7 +11,7 @@ import (
 )
 
 func TestNewISS(t *testing.T) {
-	project, err := paket.ReadProjectConfigFile("../../testdata/full.hcl")
+	project, err := paket.ReadProjectFile("../../testdata/full.hcl")
 	assert.NoError(t, err)
 	assert.NotNil(t, project)
 

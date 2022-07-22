@@ -16,7 +16,7 @@ func NewRunner() *Runner {
 	}
 }
 
-func (r Runner) RunTag(config ProjectConfig, tag string) error {
+func (r Runner) RunTag(config Project, tag string) error {
 	generator, found := r.generators[tag]
 	if !found {
 		return fmt.Errorf("no generator for tag %s", tag)

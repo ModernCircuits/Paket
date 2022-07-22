@@ -7,14 +7,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestReadProjectConfigFile(t *testing.T) {
+func TestReadProjectFile(t *testing.T) {
 	{
-		_, err := paket.ReadProjectConfigFile("path/does/no/exist/config.hcl")
+		_, err := paket.ReadProjectFile("path/does/no/exist/config.hcl")
 		assert.Error(t, err)
 	}
 
 	{
-		project, err := paket.ReadProjectConfigFile("testdata/minimal.hcl")
+		project, err := paket.ReadProjectFile("testdata/minimal.hcl")
 		assert.NoError(t, err)
 		assert.Equal(t, "Plugin Template", project.Name)
 		assert.Equal(t, "Modern Circuits", project.Vendor)
@@ -26,7 +26,7 @@ func TestReadProjectConfigFile(t *testing.T) {
 	}
 
 	{
-		project, err := paket.ReadProjectConfigFile("testdata/full.hcl")
+		project, err := paket.ReadProjectFile("testdata/full.hcl")
 		assert.NoError(t, err)
 		assert.Equal(t, "Plugin Template", project.Name)
 		assert.Equal(t, "Modern Circuits", project.Vendor)

@@ -20,7 +20,7 @@ func TestRegisterGenerator(t *testing.T) {
 		runner := paket.NewRunner()
 		assert.NotNil(t, runner)
 
-		config, err := paket.ReadProjectConfigFile("testdata/minimal.hcl")
+		config, err := paket.ReadProjectFile("testdata/minimal.hcl")
 		assert.NoError(t, err)
 
 		err = runner.RunTag(*config, "null") // unimplemented

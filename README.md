@@ -5,7 +5,7 @@
 [![codecov](https://codecov.io/gh/ModernCircuits/Paket/branch/main/graph/badge.svg?token=S8XON74JQU)](https://codecov.io/gh/ModernCircuits/Paket)
 [![Pre-Commit Hooks](https://github.com/ModernCircuits/Paket/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/ModernCircuits/Paket/actions/workflows/pre-commit.yml)
 
-Cross-platform installer generator. Primarily targets Windows `InnoSetup` & macOS `pkgbuild/productbuild`. Work in progress.
+Cross-platform meta installer generator. Primarily targets Windows `InnoSetup` & macOS `pkgbuild/productbuild`. Work in progress.
 
 ## Quick Start
 
@@ -19,14 +19,14 @@ license    = "LICENSE.txt"
 identifier = "com.modern-circuits.example-app"
 
 installer "macOS" {
-  component "App" {
+  artifact "App" {
     payload     = "macOS/Example App.app"
     destination = "/Application"
   }
 }
 
 installer "InnoSetup" {
-  component "App" {
+  artifact "App" {
     payload     = "Windows/Example App.exe"
     destination = "{commoncf64}/commonpf64/Modern Circuits"
   }
@@ -43,31 +43,31 @@ license    = "LICENSE.txt"
 identifier = "com.modern-circuits.example-effect"
 
 installer "macOS" {
-  component "AU" {
+  artifact "AU" {
     name        = "Audio Unit"
     version     = "0.1.1"
-    payload     = "macOS/AU/Example Effect.component"
+    payload     = "macOS/AU/Example Effect.artifact"
     destination = "/Library/Audio/Plug-Ins/AU"
   }
 
-  component "VST3" {
+  artifact "VST3" {
     payload     = "macOS/VST3/Example Effect.vst3"
     destination = "/Library/Audio/Plug-Ins/VST3"
   }
 
-  component "CLAP" {
+  artifact "CLAP" {
     payload     = "macOS/CLAP/Example Effect.clap"
     destination = "/Library/Audio/Plug-Ins/CLAP"
   }
 }
 
 installer "InnoSetup" {
-  component "VST3" {
+  artifact "VST3" {
     payload     = "Windows/VST3/Example Effect.vst3"
     destination = "{commoncf64}/VST3"
   }
 
-  component "CLAP" {
+  artifact "CLAP" {
     payload     = "Windows/CLAP/Example Effect.clap"
     destination = "{commoncf64}/CLAP"
   }

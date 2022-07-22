@@ -15,14 +15,14 @@ func TestCompiler(t *testing.T) {
 	assert.Implements(t, (*paket.Generator)(nil), &inno)
 	assert.Equal(t, "InnoSetup", inno.Info().Tag)
 
-	assert.NoError(t, inno.Configure(paket.ProjectConfig{}, paket.InstallerConfig{}))
+	assert.NoError(t, inno.Configure(paket.Project{}, paket.Installer{}))
 	assert.NoError(t, inno.Build(out))
 	assert.NoError(t, inno.Run(out))
 	assert.Empty(t, out.String())
 
 	_, err := inno.Import(out)
 	assert.Error(t, err)
-	assert.Error(t, inno.Export(paket.ProjectConfig{}, nil))
+	assert.Error(t, inno.Export(paket.Project{}, nil))
 	assert.Empty(t, out.String())
 }
 
@@ -30,13 +30,13 @@ func TestCompilerExport(t *testing.T) {
 	{
 		inno := innosetup.Compiler{}
 		out := &bytes.Buffer{}
-		err := inno.Export(paket.ProjectConfig{Installers: []paket.InstallerConfig{}}, out)
+		err := inno.Export(paket.Project{Installers: []paket.Installer{}}, out)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "innosetup installer config not found")
 	}
 
 	{
-		project := paket.ProjectConfig{Name: "Foo Bar", Installers: []paket.InstallerConfig{{OS: "InnoSetup"}}}
+		project := paket.Project{Name: "Foo Bar", Installers: []paket.Installer{{OS: "InnoSetup"}}}
 		inno := innosetup.Compiler{}
 		out := &bytes.Buffer{}
 		err := inno.Export(project, out)
