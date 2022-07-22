@@ -1,5 +1,7 @@
 package paket
 
+import "io"
+
 type Importer interface {
-	Import(string) (ProjectConfig, error)
+	Import(io.Reader) (ProjectConfig, error)
 }

@@ -1,5 +1,7 @@
 package paket
 
+import "io"
+
 type Exporter interface {
-	Export(ProjectConfig, string) error
+	Export(ProjectConfig, io.Writer) error
 }

@@ -1,6 +1,7 @@
 package innosetup
 
 import (
+	"errors"
 	"io"
 
 	"github.com/moderncircuits/paket"
@@ -18,3 +19,20 @@ func (c *Compiler) Info() paket.GeneratorInfo {
 func (c *Compiler) Configure(paket.ProjectConfig, paket.InstallerConfig) error { return nil }
 func (c *Compiler) Build(io.Writer) error                                      { return nil }
 func (c *Compiler) Run(io.Writer) error                                        { return nil }
+
+func (c *Compiler) Export(project paket.ProjectConfig, w io.Writer) error {
+	var installerConfig *paket.InstallerConfig
+	for _, config := range project.Installers {
+		if config.OS == c.Info().Tag {
+			installerConfig = &config
+			break
+		}
+	}
+
+	if installerConfig == nil {
+		return errors.New("innosetup installer config not found")
+	}
+
+	iss := NewISS(project)
+	return iss.WriteFile(w)
+}

@@ -26,7 +26,7 @@ installer "macOS" {
   }
 }
 
-installer "Windows" {
+installer "InnoSetup" {
   uuid = "ASDFGH-JMKJH-GFDSDFGHJKL"
 
   component "VST3" {

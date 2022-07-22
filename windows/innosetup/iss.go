@@ -5,21 +5,23 @@ import (
 	"io"
 	"os"
 	"reflect"
+
+	"github.com/moderncircuits/paket"
 )
 
 type ISS struct {
 	Setup Setup `json:"setup"`
 }
 
-func NewISS(projectName string, vendor string) ISS {
+func NewISS(project paket.ProjectConfig) ISS {
 	return ISS{
 		Setup: Setup{
-			AppName:      projectName,
-			AppPublisher: vendor,
+			AppName:      project.Name,
+			AppPublisher: project.Vendor,
 
-			DefaultGroupName:   projectName,
-			DefaultDirName:     fmt.Sprintf("{commonpf}\\%s\\%s", vendor, projectName),
-			OutputBaseFilename: fmt.Sprintf("%s Installer", projectName),
+			DefaultGroupName:   project.Name,
+			DefaultDirName:     fmt.Sprintf("{commonpf}\\%s\\%s", project.Vendor, project.Name),
+			OutputBaseFilename: fmt.Sprintf("%s Installer", project.Name),
 
 			Compression:      "lzma2",
 			SolidCompression: true,
