@@ -17,7 +17,16 @@ type Generator interface {
 	// Info describes the generator.
 	Info() GeneratorInfo
 
-	ParseInstaller(Project, hcl.Body) error
+	// Converts the hcl installer block configuration into a more specfic form
+	// understood by this generator.
+	Configure(Project, hcl.Body) error
+
+	// Creates the build  environment including folders and configuration files
+	// needed by the generator.
+	Build(io.Writer) error
+
+	// Runs the generator. This may be a no-op for some generators.
+	Run(io.Writer) error
 
 	// Import a platform specific configuration from a reader. The reader will
 	// probably come from a configuration file like an InnoSetup *.iss file or
@@ -28,11 +37,4 @@ type Generator interface {
 	// Export a platform specific configuration to a writer. Roundtrip
 	// import/export is most likely lossy.
 	Export(Project, io.Writer) error
-
-	// Creates the build  environment including folders and configuration files
-	// needed by the generator.
-	Build(io.Writer) error
-
-	// Runs the generator. This may be a no-op for some generators.
-	Run(io.Writer) error
 }

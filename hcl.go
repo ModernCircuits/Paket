@@ -59,7 +59,7 @@ func (r *Runner) ReadProjectHCL(path string) (*Project, error) {
 		if !ok {
 			return nil, fmt.Errorf("no generator registered for tag: %s", installer.Generator)
 		}
-		if err := g.ParseInstaller(project, installer.HCL); err != nil {
+		if err := g.Configure(project, installer.HCL); err != nil {
 			return nil, err
 		}
 
