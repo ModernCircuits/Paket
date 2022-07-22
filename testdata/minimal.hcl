@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: BSL-1.0
+
 name       = "Plugin Template"
 vendor     = "Modern Circuits"
 version    = "0.1.0"
