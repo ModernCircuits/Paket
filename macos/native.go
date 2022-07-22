@@ -26,11 +26,11 @@ func (n *Native) Info() paket.GeneratorInfo {
 	}
 }
 
-func (n *Native) Parse(project paket.Project, body hcl.Body) error {
+func (n *Native) ParseInstaller(project paket.Project, body hcl.Body) error {
 	var installerConfig InstallerConfig
 	diag := gohcl.DecodeBody(body, nil, &installerConfig)
 	if diag.HasErrors() {
-		return fmt.Errorf("in macos.Native.Parse failed to decode configuration: %s", diag.Error())
+		return fmt.Errorf("in macos.Native.ParseInstaller failed to decode configuration: %s", diag.Error())
 	}
 	n.installerConfig = &installerConfig
 	return nil

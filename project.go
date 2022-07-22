@@ -1,12 +1,9 @@
 package paket
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/hcl/v2/gohcl"
-	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -19,28 +16,6 @@ type Project struct {
 	WorkDir    string      `hcl:"work_dir,optional" json:"work_dir,omitempty"`
 	Installers []Installer `hcl:"installer,block" json:"installers,omitempty"`
 	generators []Generator
-}
-
-func ReadProjectFile(path string) (*Project, error) {
-	buf, err := os.ReadFile(path)
-	if err != nil {
-		return nil, fmt.Errorf("in ReadProjectFile failed to load configuration file: %v", err)
-	}
-
-	parser := hclparse.NewParser()
-	hclFile, parseDiag := parser.ParseHCL(buf, path)
-	if parseDiag.HasErrors() {
-		return nil, fmt.Errorf("in ReadProjectFile failed to parse configuration: %s", parseDiag.Error())
-	}
-
-	ctx := createParseContext()
-
-	var project Project
-	decodeDiag := gohcl.DecodeBody(hclFile.Body, ctx, &project)
-	if decodeDiag.HasErrors() {
-		return nil, fmt.Errorf("in ReadProjectFile failed to decode configuration: %s", decodeDiag.Error())
-	}
-	return &project, nil
 }
 
 func createParseContext() *hcl.EvalContext {

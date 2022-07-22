@@ -16,6 +16,10 @@ func NewRunner() *Runner {
 	}
 }
 
+func (r *Runner) ReadProjectFile(path string) (*Project, error) {
+	return r.ReadProjectHCL(path)
+}
+
 func (r Runner) RunTag(config Project, tag string) error {
 	generator, found := r.generators[tag]
 	if !found {

@@ -21,11 +21,11 @@ func (c *Compiler) Info() paket.GeneratorInfo {
 	}
 }
 
-func (c *Compiler) Parse(project paket.Project, body hcl.Body) error {
+func (c *Compiler) ParseInstaller(project paket.Project, body hcl.Body) error {
 	var installerConfig InstallerConfig
 	diag := gohcl.DecodeBody(body, nil, &installerConfig)
 	if diag.HasErrors() {
-		return fmt.Errorf("in macos.Native.Parse failed to decode configuration: %s", diag.Error())
+		return fmt.Errorf("in innosetup.Compiler.ParseInstaller failed to decode configuration: %s", diag.Error())
 	}
 	c.installerConfig = &installerConfig
 	return nil

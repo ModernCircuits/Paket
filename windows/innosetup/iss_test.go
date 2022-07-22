@@ -11,7 +11,13 @@ import (
 )
 
 func TestNewISS(t *testing.T) {
-	project, err := paket.ReadProjectFile("../../testdata/full.hcl")
+	runner := paket.NewRunner()
+	assert.NotNil(t, runner)
+
+	err := runner.RegisterGenerator(&innosetup.Compiler{})
+	assert.NoError(t, err)
+
+	project, err := runner.ReadProjectFile("testdata/windows_only.hcl")
 	assert.NoError(t, err)
 	assert.NotNil(t, project)
 
