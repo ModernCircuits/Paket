@@ -13,16 +13,22 @@ type Generator interface {
 	// Info describes the generator.
 	Info() GeneratorInfo
 
+	// Import a platform specific configuration from a reader. The reader will
+	// probably come from a configuration file like an InnoSetup *.iss file or
+	// a pkgbuild/productbuild *.xml distribution file. Roundtrip import/export
+	// is most likely lossy.
 	Import(io.Reader) (*ProjectConfig, error)
 
+	// Export a platform specific configuration to a writer. Roundtrip
+	// import/export is most likely lossy.
 	Export(ProjectConfig, io.Writer) error
 
-	// Coverts the global project configuration into a more
-	// specfic form understood by this generator.
+	// Coverts the global project configuration into a more specfic form
+	// understood by this generator.
 	Configure(ProjectConfig, InstallerConfig) error
 
-	// Creates the build  environment including folders and
-	// configuration files needed by the generator.
+	// Creates the build  environment including folders and configuration files
+	// needed by the generator.
 	Build(io.Writer) error
 
 	// Runs the generator. This may be a no-op for some generators.

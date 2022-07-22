@@ -71,18 +71,18 @@ func Test_NativeConfigure(t *testing.T) {
 
 func TestNativeExport(t *testing.T) {
 	{
-		inno := Native{}
+		native := Native{}
 		out := &bytes.Buffer{}
-		err := inno.Export(paket.ProjectConfig{Installers: []paket.InstallerConfig{}}, out)
+		err := native.Export(paket.ProjectConfig{Installers: []paket.InstallerConfig{}}, out)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "macOS installer config not found")
 	}
 
 	{
 		project := paket.ProjectConfig{Name: "Foo Bar", Installers: []paket.InstallerConfig{{OS: "macOS"}}}
-		inno := Native{}
+		native := Native{}
 		out := &bytes.Buffer{}
-		err := inno.Export(project, out)
+		err := native.Export(project, out)
 		assert.NoError(t, err)
 		assert.Contains(t, out.String(), `installer-gui-script authoringTool="Paket" authoringToolVersion="0.1.0"`)
 		assert.Contains(t, out.String(), `Foo Bar`)
