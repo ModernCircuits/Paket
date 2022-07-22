@@ -2,9 +2,10 @@
 
 [![License](https://img.shields.io/badge/License-Boost_1.0-lightblue.svg)](https://github.com/ModernCircuits/Paket/blob/main/LICENSE.txt)
 [![codecov](https://codecov.io/gh/ModernCircuits/Paket/branch/main/graph/badge.svg?token=S8XON74JQU)](https://codecov.io/gh/ModernCircuits/Paket)
-[![Go Reference](https://pkg.go.dev/badge/github.com/moderncircuits/paket.svg)](https://pkg.go.dev/github.com/moderncircuits/paket)
 [![Test](https://github.com/ModernCircuits/Paket/actions/workflows/test.yml/badge.svg)](https://github.com/ModernCircuits/Paket/actions/workflows/test.yml)
 [![Pre-Commit Hooks](https://github.com/ModernCircuits/Paket/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/ModernCircuits/Paket/actions/workflows/pre-commit.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/moderncircuits/paket.svg)](https://pkg.go.dev/github.com/moderncircuits/paket)
+[![Go Report Card](https://goreportcard.com/badge/github.com/moderncircuits/paket)](https://goreportcard.com/report/github.com/moderncircuits/paket)
 
 > :warning: **Work in progress.**
 
