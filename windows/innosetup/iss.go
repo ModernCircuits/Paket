@@ -11,10 +11,12 @@ import (
 	"github.com/moderncircuits/paket"
 )
 
+// ISS is the Inno Setup Script *.iss file.
 type ISS struct {
 	Setup Setup `json:"setup"`
 }
 
+// Convert a paket.Project to an InnosetupScript *.iss file.
 func NewISS(project paket.Project) ISS {
 	return ISS{
 		Setup: Setup{
@@ -42,6 +44,8 @@ func NewISS(project paket.Project) ISS {
 	}
 }
 
+// WriteFile writes the ISS to the given writer. The written content can be used to
+// run the InnoSetup Compiler.
 func (iss ISS) WriteFile(w io.Writer) error {
 	e := reflect.ValueOf(&iss.Setup).Elem()
 	for i := 0; i < e.NumField(); i++ {
@@ -67,6 +71,7 @@ func (iss ISS) WriteFile(w io.Writer) error {
 	return nil
 }
 
+// ReadFile reads a *.iss file.
 func ReadFile(path string) (*ISS, error) {
 	f, err := os.Open(path)
 	if err != nil {
@@ -77,6 +82,8 @@ func ReadFile(path string) (*ISS, error) {
 	return Parse(f)
 }
 
+// Parse parses the given reader. It expects the content to be a
+// valid InnoSetupScriprt *.iss file.
 func Parse(r io.Reader) (*ISS, error) {
 	lines := removeAllCommentLines(readAllLines(r))
 

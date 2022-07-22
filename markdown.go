@@ -10,11 +10,15 @@ import (
 	"github.com/yosssi/gohtml"
 )
 
+// MarkdownToHTML converts a markdown byte slice to HTML.
+// The output is sanitized using bluemonday.
 func MarkdownToHTML(md []byte) []byte {
 	maybeUnsafeHTML := markdown.ToHTML(md, nil, nil)
 	return bluemonday.UGCPolicy().SanitizeBytes(maybeUnsafeHTML)
 }
 
+// MarkdownFileToHTML converts a markdown file to HTML.
+// The output is sanitized using bluemonday.
 func MarkdownFileToHTML(file string) []byte {
 	content, err := ioutil.ReadFile(file)
 	if err != nil {
@@ -23,6 +27,7 @@ func MarkdownFileToHTML(file string) []byte {
 	return MarkdownToHTML(content)
 }
 
+// FormatHTML converts HTML to pretty HTML.
 func FormatHTML(html []byte) []byte {
 	return gohtml.FormatBytes(html)
 }

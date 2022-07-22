@@ -21,6 +21,7 @@ type Native struct {
 	tasks           []func() error
 }
 
+// Info implements paket.Generator
 func (n *Native) Info() paket.GeneratorInfo {
 	return paket.GeneratorInfo{
 		Tag:        "macos-pkg",
@@ -28,6 +29,7 @@ func (n *Native) Info() paket.GeneratorInfo {
 	}
 }
 
+// Configure implements paket.Generator
 func (n *Native) Configure(project paket.Project, ctx hcl.EvalContext, body hcl.Body) error {
 	var installerConfig InstallerConfig
 	diag := gohcl.DecodeBody(body, &ctx, &installerConfig)
@@ -47,14 +49,18 @@ func (n *Native) Configure(project paket.Project, ctx hcl.EvalContext, body hcl.
 	return nil
 }
 
+// Build implements paket.Generator
 func (n *Native) Build(io.Writer) error { return nil }
 
+// Run implements paket.Generator
 func (n *Native) Run(io.Writer) error { return nil }
 
+// Import implements paket.Generator
 func (n *Native) Import(io.Reader) (*paket.Project, error) {
 	return nil, fmt.Errorf("unimplemented import for tag: %s", n.Info().Tag)
 }
 
+// Export implements paket.Generator
 func (n *Native) Export(project paket.Project, w io.Writer) error {
 	if n.installerScript == nil {
 		return errors.New("in macos.Native.Export no config set")
