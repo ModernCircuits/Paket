@@ -14,11 +14,11 @@ type InstallerGuiScript struct {
 	AuthoringToolBuild   string `xml:"authoringToolBuild,attr,omitempty" json:"authoringToolBuild,omitempty"`
 	MinSpecVersion       string `xml:"minSpecVersion,attr,omitempty" json:"minSpecVersion,omitempty"`
 
-	Title      string      `xml:"title,omitempty" json:"title,omitempty"`
-	License    *License    `xml:"license,omitempty" json:"license,omitempty"`
-	Welcome    *Welcome    `xml:"welcome,omitempty" json:"welcome,omitempty"`
-	Conclusion *Conclusion `xml:"conclusion,omitempty" json:"conclusion,omitempty"`
-	Options    *Options    `xml:"options,omitempty" json:"options,omitempty"`
+	Title      string     `xml:"title,omitempty" json:"title,omitempty"`
+	License    License    `xml:"license,omitempty" json:"license,omitempty"`
+	Welcome    Welcome    `xml:"welcome,omitempty" json:"welcome,omitempty"`
+	Conclusion Conclusion `xml:"conclusion,omitempty" json:"conclusion,omitempty"`
+	Options    Options    `xml:"options,omitempty" json:"options,omitempty"`
 
 	ChoicesOutline ChoicesOutline `xml:"choices-outline" json:"choicesOutline,omitempty"`
 	Choices        []Choice       `xml:"choice" json:"choice,omitempty"`
@@ -31,7 +31,9 @@ func NewInstallerGuiScript(name string) InstallerGuiScript {
 		AuthoringToolVersion: "0.1.0",
 		AuthoringToolBuild:   "git",
 
-		Title: name,
+		Title:   name,
+		Choices: make([]Choice, 0),
+		PkgRefs: make([]PkgRef, 0),
 	}
 }
 

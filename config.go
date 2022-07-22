@@ -2,8 +2,10 @@ package paket
 
 import (
 	"fmt"
+	"os"
 
-	"github.com/hashicorp/hcl/v2/hclsimple"
+	"github.com/hashicorp/hcl/v2/gohcl"
+	"github.com/hashicorp/hcl/v2/hclparse"
 )
 
 type Project struct {
@@ -17,9 +19,21 @@ type Project struct {
 }
 
 func ReadProjectFile(path string) (*Project, error) {
+	buf, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("in ReadProjectFile failed to load configuration file: %v", err)
+	}
+
+	parser := hclparse.NewParser()
+	hclFile, parseDiag := parser.ParseHCL(buf, path)
+	if parseDiag.HasErrors() {
+		return nil, fmt.Errorf("in ReadProjectFile failed to parse configuration: %s", parseDiag.Error())
+	}
+
 	var project Project
-	if err := hclsimple.DecodeFile(path, nil, &project); err != nil {
-		return nil, fmt.Errorf("failed to load configuration: %v", err)
+	decodeDiag := gohcl.DecodeBody(hclFile.Body, nil, &project)
+	if decodeDiag.HasErrors() {
+		return nil, fmt.Errorf("in ReadProjectFile failed to decode configuration: %s", decodeDiag.Error())
 	}
 	return &project, nil
 }
@@ -29,10 +43,10 @@ type Installer struct {
 	UUID       string     `hcl:"uuid,optional" json:"uuid,omitempty"`
 	Welcome    string     `hcl:"welcome,optional" json:"welcome,omitempty"`
 	Conclusion string     `hcl:"conclusion,optional" json:"conclusion,omitempty"`
-	Artifacts  []artifact `hcl:"artifact,block" json:"artifacts"`
+	Artifacts  []Artifact `hcl:"artifact,block" json:"artifacts"`
 }
 
-type artifact struct {
+type Artifact struct {
 	Tag         string `hcl:"tag,label" json:"tag"`
 	Name        string `hcl:"name,optional" json:"name,omitempty"`
 	Version     string `hcl:"version,optional" json:"version,omitempty"`

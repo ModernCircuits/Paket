@@ -1,6 +1,7 @@
 package productbuild_test
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/moderncircuits/paket/macos/productbuild"
@@ -36,4 +37,13 @@ func TestReadInstallerGuiScriptFile(t *testing.T) {
 		assert.Empty(t, script.Welcome)
 		assert.Empty(t, script.Conclusion)
 	}
+}
+
+func TestInstallerGuiScriptWriteFile(t *testing.T) {
+	out := &bytes.Buffer{}
+	script := productbuild.NewInstallerGuiScript("Foo Bar")
+	err := script.WriteFile(out)
+	assert.NoError(t, err)
+	assert.Contains(t, out.String(), `installer-gui-script authoringTool="Paket" authoringToolVersion=`)
+	assert.Contains(t, out.String(), `Foo Bar`)
 }

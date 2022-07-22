@@ -73,15 +73,15 @@ func (n *Native) createMacInstaller(project paket.Project, installer paket.Insta
 	tasks := []Task{}
 
 	if project.License != "" {
-		script.License = &productbuild.License{File: project.License}
+		script.License = productbuild.License{File: project.License}
 	}
 
 	if installer.Welcome != "" {
-		script.Welcome = &productbuild.Welcome{File: installer.Welcome}
+		script.Welcome = productbuild.Welcome{File: installer.Welcome}
 	}
 
 	if installer.Conclusion != "" {
-		script.Conclusion = &productbuild.Conclusion{File: installer.Conclusion}
+		script.Conclusion = productbuild.Conclusion{File: installer.Conclusion}
 	}
 
 	for _, artifact := range installer.Artifacts {
