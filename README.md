@@ -6,13 +6,13 @@
 [![Test](https://github.com/ModernCircuits/Paket/actions/workflows/test.yml/badge.svg)](https://github.com/ModernCircuits/Paket/actions/workflows/test.yml)
 [![Pre-Commit Hooks](https://github.com/ModernCircuits/Paket/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/ModernCircuits/Paket/actions/workflows/pre-commit.yml)
 
-**Work in progress.**
+> :warning: **Work in progress.**
 
 Cross-platform meta installer generator. Primarily targets Windows `InnoSetup` & macOS `pkgbuild/productbuild`.
 
 ## Quick Start
 
-## Application
+### Application
 
 ```hcl
 name       = "Example App"
@@ -36,7 +36,7 @@ installer "Windows" "innosetup" {
 }
 ```
 
-## Audio Effect
+### Audio Effect
 
 ```hcl
 name       = "Example Effect"
