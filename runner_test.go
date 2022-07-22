@@ -15,23 +15,4 @@ func TestRegisterGenerator(t *testing.T) {
 		err = runner.RegisterGenerator(paket.NullGenerator{})
 		assert.Error(t, err)
 	})
-
-	t.Run("run registerd", func(t *testing.T) {
-		t.Skip()
-
-		runner := paket.NewRunner()
-		assert.NotNil(t, runner)
-
-		config, err := runner.ReadProjectFile("testdata/minimal.hcl")
-		assert.NoError(t, err)
-
-		err = runner.RunTag(*config, "null") // unimplemented
-		assert.Error(t, err)
-
-		err = runner.RegisterGenerator(paket.NullGenerator{})
-		assert.NoError(t, err)
-
-		err = runner.RunTag(*config, "null")
-		assert.NoError(t, err)
-	})
 }

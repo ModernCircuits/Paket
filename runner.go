@@ -20,15 +20,6 @@ func (r *Runner) ReadProjectFile(path string) (*Project, error) {
 	return r.ReadProjectHCL(path)
 }
 
-func (r Runner) RunTag(config Project, tag string) error {
-	generator, found := r.generators[tag]
-	if !found {
-		return fmt.Errorf("no generator for tag %s", tag)
-	}
-
-	return generator.Configure(config, config.Installers[0])
-}
-
 func (r *Runner) RegisterGenerator(g Generator) error {
 	tag := g.Info().Tag
 	if _, found := r.generators[tag]; found {

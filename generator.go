@@ -29,10 +29,6 @@ type Generator interface {
 	// import/export is most likely lossy.
 	Export(Project, io.Writer) error
 
-	// Coverts the global project configuration into a more specfic form
-	// understood by this generator.
-	Configure(Project, Installer) error
-
 	// Creates the build  environment including folders and configuration files
 	// needed by the generator.
 	Build(io.Writer) error

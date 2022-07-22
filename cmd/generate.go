@@ -37,9 +37,11 @@ func runGenerateCommand(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	if err := runner.RunTag(*config, "Windows"); err != nil {
-		return err
-	}
+	_ = config
+
+	// if err := runner.RunTag(*config, "Windows"); err != nil {
+	// 	return err
+	// }
 
 	js, err := json.MarshalIndent(runner, "", "  ")
 	if err != nil {

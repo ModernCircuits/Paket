@@ -53,7 +53,7 @@ func (r *Runner) ReadProjectHCL(path string) (*Project, error) {
 		License:    projectHCL.License,
 	}
 
-	project.generators = make([]Generator, 0)
+	project.Installers = make([]Generator, 0)
 	for _, installer := range projectHCL.InstallerHCL {
 		g, ok := r.generators[installer.Generator]
 		if !ok {
@@ -63,7 +63,7 @@ func (r *Runner) ReadProjectHCL(path string) (*Project, error) {
 			return nil, err
 		}
 
-		project.generators = append(project.generators, g)
+		project.Installers = append(project.Installers, g)
 	}
 
 	return &project, nil

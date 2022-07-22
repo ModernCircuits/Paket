@@ -14,7 +14,6 @@ func TestNative(t *testing.T) {
 	assert.Implements(t, (*paket.Generator)(nil), &native)
 	assert.Equal(t, "macos-pkg", native.Info().Tag)
 
-	assert.Error(t, native.Configure(paket.Project{}, paket.Installer{}))
 	assert.NoError(t, native.Build(out))
 	assert.NoError(t, native.Run(out))
 	assert.Empty(t, out.String())
@@ -25,30 +24,23 @@ func TestNative(t *testing.T) {
 	assert.Empty(t, out.String())
 }
 
-func Test_NativeConfigure(t *testing.T) {
-	t.Skip()
+func Test_NativeReadProjectFile(t *testing.T) {
 
 	{
-		config := paket.Project{}
-		native := Native{}
-		err := native.Configure(config, paket.Installer{})
-		assert.Error(t, err)
-		assert.Contains(t, err.Error(), `does not match generator tag "macos-pkg"`)
-	}
-
-	{
+		generator := &Native{}
 		runner := paket.NewRunner()
 		assert.NotNil(t, runner)
 
-		err := runner.RegisterGenerator(&Native{})
+		err := runner.RegisterGenerator(generator)
 		assert.NoError(t, err)
 
-		config, err := runner.ReadProjectFile("testdata/mac_only.hcl")
+		project, err := runner.ReadProjectFile("testdata/mac_only.hcl")
 		assert.NoError(t, err)
+		assert.Len(t, project.Installers, 1)
 
-		native := Native{}
-		err = native.Configure(*config, config.Installers[0])
-		assert.NoError(t, err)
+		native, ok := project.Installers[0].(*Native)
+		assert.True(t, ok)
+		assert.NotNil(t, native)
 		assert.NotNil(t, native.installerScript)
 		assert.Equal(t, "Plugin Template", native.installerScript.Title)
 		assert.NotEmpty(t, native.installerScript.License)
@@ -64,16 +56,23 @@ func TestNativeExport(t *testing.T) {
 	{
 		native := Native{}
 		out := &bytes.Buffer{}
-		err := native.Export(paket.Project{Installers: []paket.Installer{}}, out)
+		err := native.Export(paket.Project{}, out)
 		assert.Error(t, err)
-		assert.Contains(t, err.Error(), "macos-pkg installer config not found")
+		assert.Contains(t, err.Error(), "in macos.Native.Export no config set")
 	}
 
 	{
-		project := paket.Project{Name: "Foo Bar", Installers: []paket.Installer{{Generator: "macos-pkg"}}}
+		project := paket.Project{Name: "Foo Bar"}
 		native := Native{}
+		script, _, err := native.createMacInstaller(project, InstallerConfig{})
+		assert.NoError(t, err)
+		assert.NotNil(t, script)
+
+		native.installerConfig = &InstallerConfig{}
+		native.installerScript = script
+
 		out := &bytes.Buffer{}
-		err := native.Export(project, out)
+		err = native.Export(project, out)
 		assert.NoError(t, err)
 		assert.Contains(t, out.String(), `installer-gui-script authoringTool="Paket" authoringToolVersion="0.1.0"`)
 		assert.Contains(t, out.String(), `Foo Bar`)

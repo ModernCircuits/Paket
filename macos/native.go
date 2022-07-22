@@ -32,18 +32,16 @@ func (n *Native) ParseInstaller(project paket.Project, body hcl.Body) error {
 	if diag.HasErrors() {
 		return fmt.Errorf("in macos.Native.ParseInstaller failed to decode configuration: %s", diag.Error())
 	}
-	n.installerConfig = &installerConfig
-	return nil
-}
 
-func (n *Native) Configure(project paket.Project, installer paket.Installer) error {
-	script, tasks, err := n.createMacInstaller(project, installer)
+	script, tasks, err := n.createMacInstaller(project, installerConfig)
 	if err != nil {
 		return err
 	}
 
+	n.installerConfig = &installerConfig
 	n.installerScript = script
 	n.tasks = tasks
+
 	return nil
 }
 
@@ -56,30 +54,14 @@ func (n *Native) Import(io.Reader) (*paket.Project, error) {
 }
 
 func (n *Native) Export(project paket.Project, w io.Writer) error {
-	var installerConfig *paket.Installer
-	for _, config := range project.Installers {
-		if config.Generator == n.Info().Tag {
-			installerConfig = &config
-			break
-		}
+	if n.installerScript == nil {
+		return errors.New("in macos.Native.Export no config set")
 	}
 
-	if installerConfig == nil {
-		return errors.New("macos-pkg installer config not found")
-	}
-
-	script, _, err := n.createMacInstaller(project, *installerConfig)
-	if err != nil {
-		return err
-	}
-
-	return script.WriteFile(w)
+	return n.installerScript.WriteFile(w)
 }
 
-func (n *Native) createMacInstaller(project paket.Project, installer paket.Installer) (*productbuild.InstallerGuiScript, []func() error, error) {
-	if g := installer.Generator; g != n.Info().Tag {
-		return nil, nil, fmt.Errorf("tag %q does not match generator tag %q", g, n.Info().Tag)
-	}
+func (n *Native) createMacInstaller(project paket.Project, installer InstallerConfig) (*productbuild.InstallerGuiScript, []func() error, error) {
 	script := productbuild.NewInstallerGuiScript(project.Name)
 	tasks := []func() error{}
 

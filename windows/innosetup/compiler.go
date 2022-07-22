@@ -31,24 +31,15 @@ func (c *Compiler) ParseInstaller(project paket.Project, body hcl.Body) error {
 	return nil
 }
 
-func (c *Compiler) Configure(paket.Project, paket.Installer) error { return nil }
-func (c *Compiler) Build(io.Writer) error                          { return nil }
-func (c *Compiler) Run(io.Writer) error                            { return nil }
+func (c *Compiler) Build(io.Writer) error { return nil }
+func (c *Compiler) Run(io.Writer) error   { return nil }
 
 func (c *Compiler) Import(io.Reader) (*paket.Project, error) {
 	return nil, fmt.Errorf("unimplemented import for generator: %s", c.Info().Tag)
 }
 
 func (c *Compiler) Export(project paket.Project, w io.Writer) error {
-	var installerConfig *paket.Installer
-	for _, config := range project.Installers {
-		if config.Generator == c.Info().Tag {
-			installerConfig = &config
-			break
-		}
-	}
-
-	if installerConfig == nil {
+	if c.installerConfig == nil {
 		return errors.New("innosetup installer config not found")
 	}
 
