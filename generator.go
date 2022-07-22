@@ -19,7 +19,7 @@ type Generator interface {
 
 	// Converts the hcl installer block configuration into a more specfic form
 	// understood by this generator.
-	Configure(Project, hcl.Body) error
+	Configure(Project, hcl.EvalContext, hcl.Body) error
 
 	// Creates the build  environment including folders and configuration files
 	// needed by the generator.

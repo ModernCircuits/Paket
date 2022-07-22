@@ -21,9 +21,9 @@ func (c *Compiler) Info() paket.GeneratorInfo {
 	}
 }
 
-func (c *Compiler) Configure(project paket.Project, body hcl.Body) error {
+func (c *Compiler) Configure(project paket.Project, ctx hcl.EvalContext, body hcl.Body) error {
 	var installerConfig InstallerConfig
-	diag := gohcl.DecodeBody(body, nil, &installerConfig)
+	diag := gohcl.DecodeBody(body, &ctx, &installerConfig)
 	if diag.HasErrors() {
 		return fmt.Errorf("in innosetup.Compiler.Configure failed to decode configuration: %s", diag.Error())
 	}

@@ -8,12 +8,12 @@ installer "Windows" "innosetup" {
   uuid = "ASDFGH-JMKJH-GFDSDFGHJKL"
 
   artifact "VST3" {
-    payload     = "Windows/VST3/Plugin Template.vst3"
+    payload     = "Windows/VST3/${project.name}.vst3"
     destination = "{commoncf64}/VST3"
   }
 
   artifact "CLAP" {
-    payload     = "Windows/CLAP/Plugin Template.clap"
+    payload     = "Windows/CLAP/${project.name}.clap"
     destination = "{commoncf64}/CLAP"
   }
 }

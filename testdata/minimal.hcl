@@ -5,7 +5,7 @@ identifier = "com.modern-circuits.plugin-template"
 
 installer "macOS" "macos-pkg" {
   artifact "AU" {
-    payload     = "macOS/AU/Plugin Template.artifact"
+    payload     = "macOS/AU/${project.name}.component"
     destination = "/Library/Audio/Plug-Ins/AU"
   }
 }

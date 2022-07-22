@@ -28,10 +28,8 @@ func (r *Runner) ReadProjectFile(path string) (*Project, error) {
 		return nil, fmt.Errorf("error ReadProjectFile parsing HCL: %s", parseDiag.Error())
 	}
 
-	ctx := createParseContext()
-
 	var projectHCL projectHCL
-	decodeDiag := gohcl.DecodeBody(src.Body, ctx, &projectHCL)
+	decodeDiag := gohcl.DecodeBody(src.Body, nil, &projectHCL)
 	if decodeDiag.HasErrors() {
 		return nil, fmt.Errorf("error ReadProjectFile decoding HCL: %s", decodeDiag.Error())
 	}
@@ -44,13 +42,26 @@ func (r *Runner) ReadProjectFile(path string) (*Project, error) {
 		License:    projectHCL.License,
 	}
 
+	ctx := &hcl.EvalContext{
+		Variables: map[string]cty.Value{
+			"project": cty.ObjectVal(map[string]cty.Value{
+				"name":       cty.StringVal(project.Name),
+				"vendor":     cty.StringVal(project.Vendor),
+				"identifier": cty.StringVal(project.Identifier),
+				"version":    cty.StringVal(project.Version),
+				"license":    cty.StringVal(project.License),
+			}),
+		},
+	}
+
 	project.Installers = make([]Generator, 0)
 	for _, installer := range projectHCL.InstallerHCL {
 		g, ok := r.generators[installer.Generator]
 		if !ok {
 			return nil, fmt.Errorf("no generator registered for tag: %s", installer.Generator)
 		}
-		if err := g.Configure(project, installer.HCL); err != nil {
+		installerCtx := ctx.NewChild()
+		if err := g.Configure(project, *installerCtx, installer.HCL); err != nil {
 			return nil, err
 		}
 
@@ -82,17 +93,6 @@ func (r *Runner) RegisterGenerators(generators []Generator) error {
 		}
 	}
 	return nil
-}
-
-func createParseContext() *hcl.EvalContext {
-	variables := map[string]cty.Value{
-		// "env": cty.ObjectVal(map[string]cty.Value{
-		// 	"project": cty.StringVal(projectName),
-		// }),
-	}
-	return &hcl.EvalContext{
-		Variables: variables,
-	}
 }
 
 type projectHCL struct {

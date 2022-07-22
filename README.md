@@ -20,15 +20,15 @@ identifier = "com.modern-circuits.example-app"
 
 installer "macOS" "macos-pkg" {
   artifact "App" {
-    payload     = "macOS/Example App.app"
+    payload     = "macOS/${project.name}.app"
     destination = "/Application"
   }
 }
 
 installer "Windows" "innosetup" {
   artifact "App" {
-    payload     = "Windows/Example App.exe"
-    destination = "{commonpf64}/Modern Circuits"
+    payload     = "Windows/${project.name}.exe"
+    destination = "{commonpf64}/${project.vendor}"
   }
 }
 ```
@@ -46,29 +46,29 @@ installer "macOS" "macos-pkg" {
   artifact "AU" {
     name        = "Audio Unit"
     version     = "0.1.1"
-    payload     = "macOS/AU/Example Effect.artifact"
+    payload     = "macOS/AU/${project.name}.component"
     destination = "/Library/Audio/Plug-Ins/AU"
   }
 
   artifact "VST3" {
-    payload     = "macOS/VST3/Example Effect.vst3"
+    payload     = "macOS/VST3/${project.name}.vst3"
     destination = "/Library/Audio/Plug-Ins/VST3"
   }
 
   artifact "CLAP" {
-    payload     = "macOS/CLAP/Example Effect.clap"
+    payload     = "macOS/CLAP/${project.name}.clap"
     destination = "/Library/Audio/Plug-Ins/CLAP"
   }
 }
 
 installer "Windows" "innosetup" {
   artifact "VST3" {
-    payload     = "Windows/VST3/Example Effect.vst3"
+    payload     = "Windows/VST3/${project.name}.vst3"
     destination = "{commoncf64}/VST3"
   }
 
   artifact "CLAP" {
-    payload     = "Windows/CLAP/Example Effect.clap"
+    payload     = "Windows/CLAP/${project.name}.clap"
     destination = "{commoncf64}/CLAP"
   }
 }

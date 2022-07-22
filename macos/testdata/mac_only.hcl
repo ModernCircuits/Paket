@@ -11,17 +11,17 @@ installer "macOS" "macos-pkg" {
   artifact "AU" {
     name        = "Audio Unit"
     version     = "0.1.1"
-    payload     = "macOS/AU/Plugin Template.artifact"
+    payload     = "macOS/AU/${project.name}.component"
     destination = "/Library/Audio/Plug-Ins/AU"
   }
 
   artifact "VST3" {
-    payload     = "macOS/VST3/Plugin Template.vst3"
+    payload     = "macOS/VST3/${project.name}.vst3"
     destination = "/Library/Audio/Plug-Ins/VST3"
   }
 
   artifact "CLAP" {
-    payload     = "macOS/CLAP/Plugin Template.clap"
+    payload     = "macOS/CLAP/${project.name}.clap"
     destination = "/Library/Audio/Plug-Ins/CLAP"
   }
 }
