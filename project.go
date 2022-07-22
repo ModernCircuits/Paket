@@ -18,6 +18,7 @@ type Project struct {
 	License    string      `hcl:"license,optional" json:"license,omitempty"`
 	WorkDir    string      `hcl:"work_dir,optional" json:"work_dir,omitempty"`
 	Installers []Installer `hcl:"installer,block" json:"installers,omitempty"`
+	generators []Generator
 }
 
 func ReadProjectFile(path string) (*Project, error) {

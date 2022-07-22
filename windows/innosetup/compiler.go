@@ -5,10 +5,13 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/moderncircuits/paket"
 )
 
 type Compiler struct {
+	installerConfig *InstallerConfig
 }
 
 func (c *Compiler) Info() paket.GeneratorInfo {
@@ -18,9 +21,16 @@ func (c *Compiler) Info() paket.GeneratorInfo {
 	}
 }
 
-func (c *Compiler) Parse(paket.Project, paket.InstallerHCL) error {
-	return fmt.Errorf("unimplemented parse for generator: %s", c.Info().Tag)
+func (c *Compiler) Parse(project paket.Project, body hcl.Body) error {
+	var installerConfig InstallerConfig
+	diag := gohcl.DecodeBody(body, nil, &installerConfig)
+	if diag.HasErrors() {
+		return fmt.Errorf("in macos.Native.Parse failed to decode configuration: %s", diag.Error())
+	}
+	c.installerConfig = &installerConfig
+	return nil
 }
+
 func (c *Compiler) Configure(paket.Project, paket.Installer) error { return nil }
 func (c *Compiler) Build(io.Writer) error                          { return nil }
 func (c *Compiler) Run(io.Writer) error                            { return nil }

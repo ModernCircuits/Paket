@@ -6,13 +6,16 @@ import (
 	"io"
 	"strings"
 
+	"github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/hcl/v2/gohcl"
 	"github.com/moderncircuits/paket"
 	"github.com/moderncircuits/paket/macos/pkgbuild"
 	"github.com/moderncircuits/paket/macos/productbuild"
 )
 
 type Native struct {
-	installerScript productbuild.InstallerGuiScript
+	installerConfig *InstallerConfig
+	installerScript *productbuild.InstallerGuiScript
 	tasks           []func() error
 }
 
@@ -23,8 +26,14 @@ func (n *Native) Info() paket.GeneratorInfo {
 	}
 }
 
-func (n *Native) Parse(paket.Project, paket.InstallerHCL) error {
-	return fmt.Errorf("unimplemented parse for generator: %s", n.Info().Tag)
+func (n *Native) Parse(project paket.Project, body hcl.Body) error {
+	var installerConfig InstallerConfig
+	diag := gohcl.DecodeBody(body, nil, &installerConfig)
+	if diag.HasErrors() {
+		return fmt.Errorf("in macos.Native.Parse failed to decode configuration: %s", diag.Error())
+	}
+	n.installerConfig = &installerConfig
+	return nil
 }
 
 func (n *Native) Configure(project paket.Project, installer paket.Installer) error {
@@ -33,7 +42,7 @@ func (n *Native) Configure(project paket.Project, installer paket.Installer) err
 		return err
 	}
 
-	n.installerScript = *script
+	n.installerScript = script
 	n.tasks = tasks
 	return nil
 }

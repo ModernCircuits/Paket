@@ -33,3 +33,12 @@ func (r *Runner) RegisterGenerator(g Generator) error {
 	r.generators[tag] = g
 	return nil
 }
+
+func (r *Runner) RegisterGenerators(generators []Generator) error {
+	for _, generator := range generators {
+		if err := r.RegisterGenerator(generator); err != nil {
+			return err
+		}
+	}
+	return nil
+}

@@ -25,7 +25,7 @@ type InstallerHCL struct {
 	HCL       hcl.Body `hcl:",remain"`
 }
 
-func (r *Runner) ReadProjectHCL(path string) (*ProjectHCL, error) {
+func (r *Runner) ReadProjectHCL(path string) (*Project, error) {
 	buf, err := os.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("error ReadProjectFile reading file: %v", err)
@@ -39,17 +39,31 @@ func (r *Runner) ReadProjectHCL(path string) (*ProjectHCL, error) {
 
 	ctx := createParseContext()
 
-	var project ProjectHCL
-	decodeDiag := gohcl.DecodeBody(src.Body, ctx, &project)
+	var projectHCL ProjectHCL
+	decodeDiag := gohcl.DecodeBody(src.Body, ctx, &projectHCL)
 	if decodeDiag.HasErrors() {
 		return nil, fmt.Errorf("error ReadProjectFile decoding HCL: %s", decodeDiag.Error())
 	}
 
-	for _, installer := range project.InstallerHCL {
-		switch installer.Generator {
-		case "macos-pkg":
-		case "innosetup":
+	project := Project{
+		Name:       projectHCL.Name,
+		Vendor:     projectHCL.Vendor,
+		Identifier: projectHCL.Identifier,
+		Version:    projectHCL.Version,
+		License:    projectHCL.License,
+	}
+
+	project.generators = make([]Generator, 0)
+	for _, installer := range projectHCL.InstallerHCL {
+		g, ok := r.generators[installer.Generator]
+		if !ok {
+			return nil, fmt.Errorf("no generator registered for tag: %s", installer.Generator)
 		}
+		if err := g.Parse(project, installer.HCL); err != nil {
+			return nil, err
+		}
+
+		project.generators = append(project.generators, g)
 	}
 
 	return &project, nil

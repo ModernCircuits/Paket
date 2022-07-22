@@ -28,7 +28,7 @@ func runGenerateCommand(cmd *cobra.Command, args []string) error {
 		&innosetup.Compiler{},
 	}
 
-	if err := registerGenerators(runner, generators); err != nil {
+	if err := runner.RegisterGenerators(generators); err != nil {
 		return err
 	}
 
@@ -51,14 +51,5 @@ func runGenerateCommand(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	return nil
-}
-
-func registerGenerators(runner *paket.Runner, generators []paket.Generator) error {
-	for _, generator := range generators {
-		if err := runner.RegisterGenerator(generator); err != nil {
-			return err
-		}
-	}
 	return nil
 }

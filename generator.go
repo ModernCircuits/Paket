@@ -2,6 +2,8 @@ package paket
 
 import (
 	"io"
+
+	"github.com/hashicorp/hcl/v2"
 )
 
 type GeneratorInfo struct {
@@ -15,7 +17,7 @@ type Generator interface {
 	// Info describes the generator.
 	Info() GeneratorInfo
 
-	Parse(Project, InstallerHCL) error
+	Parse(Project, hcl.Body) error
 
 	// Import a platform specific configuration from a reader. The reader will
 	// probably come from a configuration file like an InnoSetup *.iss file or
