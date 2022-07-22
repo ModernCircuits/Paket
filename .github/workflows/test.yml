@@ -6,6 +6,7 @@ jobs:
   test:
     strategy:
       matrix:
+        go: [1.17, 1.18]
         os: [ubuntu-22.04, macos-11, windows-2022]
       fail-fast: false
     runs-on: ${{ matrix.os }}
@@ -16,7 +17,7 @@ jobs:
       - name: Setup Golang
         uses: actions/setup-go@v3
         with:
-          go-version: 1.18.x
+          go-version: ${{ matrix.go }}
 
       - name: Lint golangci
         uses: golangci/golangci-lint-action@v3
