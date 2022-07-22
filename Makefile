@@ -48,6 +48,10 @@ clean:
 	rm -f $(BINARY_NAME)
 	rm -f coverage.out
 
+.PHONY: format-rst
+format-rst:
+	@find . -iname '*.rst' -o -iname '*.rstinc' | xargs rstfmt
+
 .PHONY: stats
 stats:
 	cloc --vcs=git .
