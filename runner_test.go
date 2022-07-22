@@ -3,6 +3,7 @@
 package paket_test
 
 import (
+	"runtime"
 	"testing"
 
 	"github.com/moderncircuits/paket"
@@ -10,6 +11,13 @@ import (
 	"github.com/moderncircuits/paket/windows/innosetup"
 	"github.com/stretchr/testify/assert"
 )
+
+func fileDoesNotExistMessage() string {
+	if runtime.GOOS == "windows" {
+		return "The system cannot find the path specified."
+	}
+	return "no such file or directory"
+}
 
 func TestRegisterGenerator(t *testing.T) {
 	t.Run("register duplicate", func(t *testing.T) {
@@ -35,8 +43,8 @@ func TestReadProjectFile(t *testing.T) {
 		err  string
 	}{
 		// Do not exist
-		{file: "/path/does/no/exist/config.hcl", err: "The system cannot find the path specified."},
-		{file: "local/noexist.hcl", err: "The system cannot find the path specified."},
+		{file: "/path/does/no/exist/config.hcl", err: fileDoesNotExistMessage()},
+		{file: "local/noexist.hcl", err: fileDoesNotExistMessage()},
 
 		// // Syntax/Schema errors
 		{file: "testdata/err/invalid_generator.hcl", err: "no generator registered for tag: macos-magic"},
