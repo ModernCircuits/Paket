@@ -1,4 +1,4 @@
-# Modern Circuits - Paket
+# Paket
 
 [![License](https://img.shields.io/badge/License-Boost_1.0-lightblue.svg)](https://github.com/ModernCircuits/Paket/blob/main/LICENSE.txt)
 [![codecov](https://codecov.io/gh/ModernCircuits/Paket/branch/main/graph/badge.svg?token=S8XON74JQU)](https://codecov.io/gh/ModernCircuits/Paket)
