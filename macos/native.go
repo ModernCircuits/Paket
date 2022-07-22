@@ -39,6 +39,14 @@ func (n *Native) Build(io.Writer) error { return nil }
 
 func (n *Native) Run(io.Writer) error { return nil }
 
+func (n *Native) Import(io.Reader) (*paket.ProjectConfig, error) {
+	return nil, fmt.Errorf("unimplemented import for tag: %s", n.Info().Tag)
+}
+
+func (n *Native) Export(paket.ProjectConfig, io.Writer) error {
+	return fmt.Errorf("unimplemented export for tag: %s", n.Info().Tag)
+}
+
 func (n *Native) createMacInstaller(project paket.ProjectConfig, installer paket.InstallerConfig) (*productbuild.InstallerGuiScript, []Task, error) {
 	if installer.OS != n.Info().Tag {
 		return nil, nil, fmt.Errorf("tag %q does not match generator tag %q", installer.OS, n.Info().Tag)

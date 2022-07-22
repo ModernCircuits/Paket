@@ -2,6 +2,7 @@ package innosetup
 
 import (
 	"errors"
+	"fmt"
 	"io"
 
 	"github.com/moderncircuits/paket"
@@ -19,6 +20,10 @@ func (c *Compiler) Info() paket.GeneratorInfo {
 func (c *Compiler) Configure(paket.ProjectConfig, paket.InstallerConfig) error { return nil }
 func (c *Compiler) Build(io.Writer) error                                      { return nil }
 func (c *Compiler) Run(io.Writer) error                                        { return nil }
+
+func (c *Compiler) Import(io.Reader) (*paket.ProjectConfig, error) {
+	return nil, fmt.Errorf("unimplemented import for tag: %s", c.Info().Tag)
+}
 
 func (c *Compiler) Export(project paket.ProjectConfig, w io.Writer) error {
 	var installerConfig *paket.InstallerConfig

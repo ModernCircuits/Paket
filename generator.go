@@ -13,6 +13,10 @@ type Generator interface {
 	// Info describes the generator.
 	Info() GeneratorInfo
 
+	Import(io.Reader) (*ProjectConfig, error)
+
+	Export(ProjectConfig, io.Writer) error
+
 	// Coverts the global project configuration into a more
 	// specfic form understood by this generator.
 	Configure(ProjectConfig, InstallerConfig) error

@@ -13,7 +13,6 @@ func TestCompiler(t *testing.T) {
 	inno := innosetup.Compiler{}
 	out := &bytes.Buffer{}
 	assert.Implements(t, (*paket.Generator)(nil), &inno)
-	assert.Implements(t, (*paket.Exporter)(nil), &inno)
 	assert.Equal(t, "InnoSetup", inno.Info().Tag)
 	assert.NoError(t, inno.Configure(paket.ProjectConfig{}, paket.InstallerConfig{}))
 	assert.NoError(t, inno.Build(out))

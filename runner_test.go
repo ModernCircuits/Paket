@@ -9,7 +9,7 @@ import (
 
 func TestRegisterGenerator(t *testing.T) {
 	t.Run("register duplicate", func(t *testing.T) {
-		runner := paket.Runner{}
+		runner := paket.NewRunner()
 		err := runner.RegisterGenerator(paket.NullGenerator{})
 		assert.NoError(t, err)
 		err = runner.RegisterGenerator(paket.NullGenerator{})

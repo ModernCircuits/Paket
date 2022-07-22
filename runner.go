@@ -5,18 +5,20 @@ import (
 )
 
 type Runner struct {
-	generators []Generator
+	WorkDir string
+
+	generators map[string]Generator
 }
 
 func NewRunner() *Runner {
 	return &Runner{
-		generators: []Generator{},
+		generators: map[string]Generator{},
 	}
 }
 
 func (r Runner) RunTag(config ProjectConfig, tag string) error {
-	generator := getGeneratorForTag(r.generators, tag)
-	if generator == nil {
+	generator, found := r.generators[tag]
+	if !found {
 		return fmt.Errorf("no generator for tag %s", tag)
 	}
 
@@ -24,22 +26,10 @@ func (r Runner) RunTag(config ProjectConfig, tag string) error {
 }
 
 func (r *Runner) RegisterGenerator(g Generator) error {
-	if hasGeneratorForTag(r.generators, g.Info().Tag) {
-		return fmt.Errorf("generator for tag %s already registered", g.Info().Tag)
+	tag := g.Info().Tag
+	if _, found := r.generators[tag]; found {
+		return fmt.Errorf("generator for tag %s already registered", tag)
 	}
-	r.generators = append(r.generators, g)
+	r.generators[tag] = g
 	return nil
-}
-
-func getGeneratorForTag(generators []Generator, tag string) Generator {
-	for _, g := range generators {
-		if g.Info().Tag == tag {
-			return g
-		}
-	}
-	return nil
-}
-
-func hasGeneratorForTag(generators []Generator, tag string) bool {
-	return getGeneratorForTag(generators, tag) != nil
 }
