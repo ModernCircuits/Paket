@@ -21,27 +21,36 @@ func TestRegisterGenerator(t *testing.T) {
 	})
 }
 
+func TestRegisterGenerators(t *testing.T) {
+	t.Run("register duplicate", func(t *testing.T) {
+		runner := paket.NewRunner()
+		err := runner.RegisterGenerators([]paket.Generator{paket.NullGenerator{}, paket.NullGenerator{}})
+		assert.Error(t, err)
+	})
+}
+
 func TestReadProjectFile(t *testing.T) {
 	tests := []struct {
 		file string
-		err  bool
+		err  string
 	}{
 		// Do not exist
-		{file: "path/does/no/exist/config.hcl", err: true},
-		{file: "local/noexist.hcl", err: true},
+		{file: "/path/does/no/exist/config.hcl", err: "The system cannot find the path specified."},
+		{file: "local/noexist.hcl", err: "The system cannot find the path specified."},
 
-		// Syntax/Schema errors
-		{file: "testdata/err/invalid_generator.hcl", err: true},
-		{file: "testdata/err/no_identifier.hcl", err: true},
-		{file: "testdata/err/no_name.hcl", err: true},
-		{file: "testdata/err/no_vendor.hcl", err: true},
-		{file: "testdata/err/no_version.hcl", err: true},
-		{file: "testdata/err/syntax_missing_key.hcl", err: true},
-		{file: "testdata/err/syntax_missing_value.hcl", err: true},
+		// // Syntax/Schema errors
+		{file: "testdata/err/invalid_generator.hcl", err: "no generator registered for tag: macos-magic"},
+		{file: "testdata/err/invalid_installer_block.hcl", err: `An argument named "unknown"`},
+		{file: "testdata/err/missing_identifier.hcl", err: `The argument "identifier"`},
+		{file: "testdata/err/missing_name.hcl", err: `The argument "name"`},
+		{file: "testdata/err/missing_vendor.hcl", err: `The argument "vendor"`},
+		{file: "testdata/err/missing_version.hcl", err: `The argument "version"`},
+		{file: "testdata/err/syntax_missing_key.hcl", err: "Argument or block definition required"},
+		{file: "testdata/err/syntax_missing_value.hcl", err: "Invalid expression"},
 
-		// No errors
-		{file: "testdata/full.hcl", err: false},
-		{file: "testdata/minimal.hcl", err: false},
+		// // No errors
+		{file: "testdata/full.hcl", err: ""},
+		{file: "testdata/minimal.hcl", err: ""},
 	}
 
 	for _, tc := range tests {
@@ -53,8 +62,9 @@ func TestReadProjectFile(t *testing.T) {
 			assert.NoError(t, err)
 
 			project, err := runner.ReadProjectFile(tc.file)
-			if tc.err {
+			if tc.err != "" {
 				assert.Error(t, err)
+				assert.Contains(t, err.Error(), tc.err)
 				assert.Nil(t, project)
 			} else {
 				assert.NoError(t, err)

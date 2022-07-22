@@ -1,6 +1,7 @@
 .PHONY: all
 all: deps build test
 
+HCLFMT_BIN ?= ~/go/bin/hclfmt.exe
 # BINARY
 BINARY_DIR=bin
 BINARY_NAME=$(BINARY_DIR)/paket
@@ -51,6 +52,10 @@ clean:
 .PHONY: format-rst
 format-rst:
 	@find . -iname '*.rst' -o -iname '*.rstinc' | xargs rstfmt
+
+.PHONY: format-hcl
+format-hcl:
+	@find . -iname '*.hcl' -not -path "./testdata/err/*" | xargs ${HCLFMT_BIN} -check -w
 
 .PHONY: stats
 stats:
