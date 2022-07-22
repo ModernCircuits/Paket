@@ -48,6 +48,3 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
-
-      - name: Upload go report card
-        uses: creekorful/goreportcard-action@v1.0
