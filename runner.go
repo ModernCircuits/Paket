@@ -18,22 +18,17 @@ type Runner struct {
 	generators map[string]Generator
 }
 
-func (r *Runner) ReadProjectFile(path string) (*Project, error) {
-	buf, err := os.ReadFile(path)
-	if err != nil {
-		return nil, fmt.Errorf("error ReadProjectFile reading file: %v", err)
-	}
-
+func (r *Runner) ReadProject(buf []byte, path string) (*Project, error) {
 	parser := hclparse.NewParser()
 	src, parseDiag := parser.ParseHCL(buf, path)
 	if parseDiag.HasErrors() {
-		return nil, fmt.Errorf("error ReadProjectFile parsing HCL: %s", parseDiag.Error())
+		return nil, fmt.Errorf("in paket.Runner.ReadProject parsing HCL: %s", parseDiag.Error())
 	}
 
 	var projectHCL projectHCL
 	decodeDiag := gohcl.DecodeBody(src.Body, nil, &projectHCL)
 	if decodeDiag.HasErrors() {
-		return nil, fmt.Errorf("error ReadProjectFile decoding HCL: %s", decodeDiag.Error())
+		return nil, fmt.Errorf("in paket.Runner.ReadProject decoding HCL: %s", decodeDiag.Error())
 	}
 
 	project := Project{
@@ -71,6 +66,14 @@ func (r *Runner) ReadProjectFile(path string) (*Project, error) {
 	}
 
 	return &project, nil
+}
+
+func (r *Runner) ReadProjectFile(path string) (*Project, error) {
+	buf, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("in Runner.ReadProjectFile reading file: %v", err)
+	}
+	return r.ReadProject(buf, path)
 }
 
 func NewRunner() *Runner {

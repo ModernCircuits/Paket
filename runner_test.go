@@ -22,16 +22,56 @@ func TestRegisterGenerator(t *testing.T) {
 }
 
 func TestReadProjectFile(t *testing.T) {
+	tests := []struct {
+		file string
+		err  bool
+	}{
+		// Do not exist
+		{file: "path/does/no/exist/config.hcl", err: true},
+		{file: "local/noexist.hcl", err: true},
+
+		// Syntax/Schema errors
+		{file: "testdata/err/invalid_generator.hcl", err: true},
+		{file: "testdata/err/no_identifier.hcl", err: true},
+		{file: "testdata/err/no_name.hcl", err: true},
+		{file: "testdata/err/no_vendor.hcl", err: true},
+		{file: "testdata/err/no_version.hcl", err: true},
+		{file: "testdata/err/syntax_missing_key.hcl", err: true},
+		{file: "testdata/err/syntax_missing_value.hcl", err: true},
+
+		// No errors
+		{file: "testdata/full.hcl", err: false},
+		{file: "testdata/minimal.hcl", err: false},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.file, func(t *testing.T) {
+			runner := paket.NewRunner()
+			assert.NotNil(t, runner)
+			generators := []paket.Generator{&macos.Native{}, &innosetup.Compiler{}}
+			err := runner.RegisterGenerators(generators)
+			assert.NoError(t, err)
+
+			project, err := runner.ReadProjectFile(tc.file)
+			if tc.err {
+				assert.Error(t, err)
+				assert.Nil(t, project)
+			} else {
+				assert.NoError(t, err)
+				assert.NotNil(t, project)
+			}
+
+		})
+	}
+
+}
+
+func TestReadProjectFileExamples(t *testing.T) {
 	runner := paket.NewRunner()
 	assert.NotNil(t, runner)
 	generators := []paket.Generator{&macos.Native{}, &innosetup.Compiler{}}
 	err := runner.RegisterGenerators(generators)
 	assert.NoError(t, err)
-
-	t.Run("path/does/no/exist/config.hcl", func(t *testing.T) {
-		_, err := runner.ReadProjectFile("path/does/no/exist/config.hcl")
-		assert.Error(t, err)
-	})
 
 	t.Run("testdata/minimal.hcl", func(t *testing.T) {
 		project, err := runner.ReadProjectFile("testdata/minimal.hcl")
