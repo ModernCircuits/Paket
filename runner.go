@@ -63,7 +63,7 @@ func (r *Runner) ReadProjectFile(path string) (*Project, error) {
 			return nil, fmt.Errorf("no generator registered for tag: %s", installer.Generator)
 		}
 		installerCtx := ctx.NewChild()
-		if err := g.Configure(project, *installerCtx, installer.HCL); err != nil {
+		if err := g.Configure(project, installerCtx, installer.HCL); err != nil {
 			return nil, err
 		}
 

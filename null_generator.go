@@ -15,6 +15,9 @@ type NullGenerator struct {
 // Info implements paket.Generator
 func (ng NullGenerator) Info() GeneratorInfo { return GeneratorInfo{"null", []string{}} }
 
+// Export implements paket.Generator
+func (ng NullGenerator) Configure(Project, *hcl.EvalContext, hcl.Body) error { return nil }
+
 // Configure implements paket.Generator
 func (ng NullGenerator) Build(io.Writer) error { return nil }
 
@@ -26,6 +29,3 @@ func (ng NullGenerator) Import(io.Reader) (*Project, error) { return nil, nil }
 
 // Import implements paket.Generator
 func (ng NullGenerator) Export(Project, io.Writer) error { return nil }
-
-// Export implements paket.Generator
-func (ng NullGenerator) Configure(Project, hcl.EvalContext, hcl.Body) error { return nil }

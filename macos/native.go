@@ -30,9 +30,9 @@ func (n *Native) Info() paket.GeneratorInfo {
 }
 
 // Configure implements paket.Generator
-func (n *Native) Configure(project paket.Project, ctx hcl.EvalContext, body hcl.Body) error {
+func (n *Native) Configure(project paket.Project, ctx *hcl.EvalContext, body hcl.Body) error {
 	var installerConfig InstallerConfig
-	diag := gohcl.DecodeBody(body, &ctx, &installerConfig)
+	diag := gohcl.DecodeBody(body, ctx, &installerConfig)
 	if diag.HasErrors() {
 		return fmt.Errorf("in macos.Native.Configure failed to decode configuration: %s", diag.Error())
 	}
