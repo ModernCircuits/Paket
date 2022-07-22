@@ -26,20 +26,9 @@ func TestCompiler(t *testing.T) {
 }
 
 func TestCompilerExport(t *testing.T) {
-	{
-		inno := innosetup.Compiler{}
-		out := &bytes.Buffer{}
-		err := inno.Export(paket.Project{}, out)
-		assert.Error(t, err)
-		assert.Contains(t, err.Error(), "innosetup installer config not found")
-	}
-
-	// {
-	// 	project := paket.Project{Name: "Foo Bar"}
-	// 	inno := innosetup.Compiler{}
-	// 	out := &bytes.Buffer{}
-	// 	err := inno.Export(project, out)
-	// 	assert.NoError(t, err)
-	// 	assert.Contains(t, out.String(), `AppName="Foo Bar"`)
-	// }
+	inno := innosetup.Compiler{}
+	out := &bytes.Buffer{}
+	err := inno.Export(paket.Project{}, out)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "innosetup installer config not found")
 }

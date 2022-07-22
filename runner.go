@@ -2,6 +2,12 @@ package paket
 
 import (
 	"fmt"
+	"os"
+
+	"github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/hcl/v2/gohcl"
+	"github.com/hashicorp/hcl/v2/hclparse"
+	"github.com/zclconf/go-cty/cty"
 )
 
 type Runner struct {
@@ -10,14 +16,54 @@ type Runner struct {
 	generators map[string]Generator
 }
 
+func (r *Runner) ReadProjectFile(path string) (*Project, error) {
+	buf, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("error ReadProjectFile reading file: %v", err)
+	}
+
+	parser := hclparse.NewParser()
+	src, parseDiag := parser.ParseHCL(buf, path)
+	if parseDiag.HasErrors() {
+		return nil, fmt.Errorf("error ReadProjectFile parsing HCL: %s", parseDiag.Error())
+	}
+
+	ctx := createParseContext()
+
+	var projectHCL projectHCL
+	decodeDiag := gohcl.DecodeBody(src.Body, ctx, &projectHCL)
+	if decodeDiag.HasErrors() {
+		return nil, fmt.Errorf("error ReadProjectFile decoding HCL: %s", decodeDiag.Error())
+	}
+
+	project := Project{
+		Name:       projectHCL.Name,
+		Vendor:     projectHCL.Vendor,
+		Identifier: projectHCL.Identifier,
+		Version:    projectHCL.Version,
+		License:    projectHCL.License,
+	}
+
+	project.Installers = make([]Generator, 0)
+	for _, installer := range projectHCL.InstallerHCL {
+		g, ok := r.generators[installer.Generator]
+		if !ok {
+			return nil, fmt.Errorf("no generator registered for tag: %s", installer.Generator)
+		}
+		if err := g.Configure(project, installer.HCL); err != nil {
+			return nil, err
+		}
+
+		project.Installers = append(project.Installers, g)
+	}
+
+	return &project, nil
+}
+
 func NewRunner() *Runner {
 	return &Runner{
 		generators: map[string]Generator{},
 	}
-}
-
-func (r *Runner) ReadProjectFile(path string) (*Project, error) {
-	return r.ReadProjectHCL(path)
 }
 
 func (r *Runner) RegisterGenerator(g Generator) error {
@@ -36,4 +82,30 @@ func (r *Runner) RegisterGenerators(generators []Generator) error {
 		}
 	}
 	return nil
+}
+
+func createParseContext() *hcl.EvalContext {
+	variables := map[string]cty.Value{
+		// "env": cty.ObjectVal(map[string]cty.Value{
+		// 	"project": cty.StringVal(projectName),
+		// }),
+	}
+	return &hcl.EvalContext{
+		Variables: variables,
+	}
+}
+
+type projectHCL struct {
+	Name         string          `hcl:"name"`
+	Vendor       string          `hcl:"vendor"`
+	Identifier   string          `hcl:"identifier"`
+	Version      string          `hcl:"version"`
+	License      string          `hcl:"license,optional"`
+	InstallerHCL []*installerHCL `hcl:"installer,block"`
+}
+
+type installerHCL struct {
+	Name      string   `hcl:"name,label"`
+	Generator string   `hcl:"generator,label"`
+	HCL       hcl.Body `hcl:",remain"`
 }

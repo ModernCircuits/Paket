@@ -30,11 +30,11 @@ coverage:
 	go test -coverprofile=coverage.out ./...
 
 .PHONY: coverage-cli
-coverage-cli:
+coverage-cli: coverage
 	go tool cover -func=coverage.out
 
 .PHONY: coverage-html
-coverage-html:
+coverage-html: coverage
 	go tool cover -html=coverage.out
 
 .PHONY: check
